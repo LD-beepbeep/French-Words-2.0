@@ -103,7 +103,7 @@
             background: #222f40;
             color: #fff;
         }
-        #recent-list, #hard-words-list {
+        #recent-list, #hard-words-list, #recent-list-hard {
             margin-bottom: 1.1em;
         }
         .recent-item, .hard-word-item {
@@ -180,6 +180,32 @@
         .centered-title {
             text-align: center;
         }
+        .footer {
+            margin-top: 2.2em;
+            font-size: 0.97em;
+            color: #abd1ff;
+            text-align: center;
+            opacity: 0.85;
+            letter-spacing: 0.05em;
+        }
+        /* Language selector */
+        #language-selector {
+            margin-bottom: 2em;
+            text-align: center;
+        }
+        #language-selector label {
+            margin: 0 0.7em 0 0;
+            font-weight: 500;
+        }
+        #language-selector select {
+            background: var(--card);
+            color: var(--text-light);
+            border: 1.2px solid var(--primary);
+            border-radius: 7px;
+            font-size: 1em;
+            padding: 0.3em 1.1em;
+            margin-left: 0.2em;
+        }
         /* Stats */
         .stats-table {
             width: 100%;
@@ -207,6 +233,15 @@
 </head>
 <body>
     <div class="container">
+        <!-- Language selector -->
+        <div id="language-selector">
+            <label for="lang-choice">Quiz Language: </label>
+            <select id="lang-choice" onchange="setQuizLanguage()">
+                <option value="fr-nl">French & Dutch</option>
+                <option value="en-nl">English & Dutch</option>
+                <option value="en-fr">English & French</option>
+            </select>
+        </div>
         <!-- Main Menu -->
         <div id="main-menu" class="screen active">
             <h1 class="centered-title">French-Dutch Vocabulary Trainer</h1>
@@ -262,10 +297,6 @@
             <div style="text-align:center; margin-bottom:1.2em;">
                 <button class="btn btn-accent" onclick="practiceCustomWords()">Start Custom Practice</button>
             </div>
-            <div>
-                <h3>Recently Added Words</h3>
-                <div id="recent-list-custom"></div>
-            </div>
         </div>
         <!-- Add Word -->
         <div id="add-word-menu" class="screen">
@@ -320,6 +351,9 @@
                 <button onclick="addToHardWords(true)" class="btn btn-accent">Add</button>
                 <button onclick="addToHardWords(false)" class="btn btn-secondary">Skip</button>
             </div>
+        </div>
+        <div class="footer">
+            Made by Lars
         </div>
     </div>
     <script src="script.js"></script>
