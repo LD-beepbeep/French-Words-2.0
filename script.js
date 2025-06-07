@@ -26,24 +26,126 @@ class VocabularyQuiz {
     // Load default and custom vocabularies
     loadDefaultVocabulary() {
         const defaultVocab = [
-            // ... (keep your default words array here) ...
             ["la banlieue", "de buitenwijken"],
             ["la campagne", "het platteland"],
-            // ... (truncated for brevity, use your full list) ...
+            ["le village", "het dorp"],
+            ["la ville", "de stad"],
+            ["le quartier", "de wijk"],
+            ["la rue", "de straat"],
+            ["la maison", "het huis"],
+            ["l'appartement (m)", "de flat, het appartement"],
+            ["le bâtiment", "het gebouw"],
+            ["le logement", "de woning"],
+            ["le mur", "de muur"],
+            ["la porte", "de deur"],
+            ["la fenêtre", "het raam"],
+            ["le toit", "het dak"],
+            ["le sol", "de vloer"],
+            ["le plafond", "het plafond"],
+            ["l'escalier (m)", "de trap"],
+            ["l'ascenseur (m)", "de lift"],
+            ["le rez-de-chaussée", "de begane grond"],
+            ["le premier étage", "de eerste verdieping"],
+            ["le grenier", "de zolder"],
+            ["la cave", "de kelder"],
+            ["le garage", "de garage"],
+            ["le jardin", "de tuin"],
+            ["la terrasse", "het terras"],
+            ["le balcon", "het balkon"],
+            ["le salon", "de woonkamer"],
+            ["la salle à manger", "de eetkamer"],
+            ["la cuisine", "de keuken"],
+            ["la chambre", "de slaapkamer"],
+            ["la salle de bains", "de badkamer"],
+            ["le lit", "het bed"],
+            ["le matelas", "het matras"],
+            ["le drap", "het laken"],
+            ["l'oreiller (m)", "het kussen"],
+            ["la couverture", "de deken"],
+            ["la table", "de tafel"],
+            ["la chaise", "de stoel"],
+            ["le fauteuil", "de fauteuil, de leunstoel"],
+            ["le canapé", "de bank"],
+            ["la commode", "de ladekast"],
+            ["l'armoire (f)", "de kast"],
+            ["la lampe", "de lamp"],
+            ["la télévision", "de televisie"],
+            ["la radio", "de radio"],
+            ["le tapis", "het tapijt, het kleed"],
+            ["le rideau", "het gordijn"],
+            ["le tableau", "het schilderij, het bord"],
+            ["la douche", "de douche"],
+            ["le lavabo", "de wastafel"],
+            ["la baignoire", "het bad"],
+            ["le miroir", "de spiegel"],
+            ["la serviette", "de handdoek"],
+            ["la machine à laver", "de wasmachine"],
+            ["le sèche-linge", "de droger"],
+            ["la cuisinière", "het fornuis"],
+            ["le four", "de oven"],
+            ["le micro-ondes", "de magnetron"],
+            ["le réfrigérateur", "de koelkast"],
+            ["le congélateur", "de vriezer"],
+            ["l'évier (m)", "de gootsteen"],
+            ["le lave-vaisselle", "de vaatwasser"],
+            ["la cafetière", "het koffiezetapparaat"],
+            ["le grille-pain", "het broodrooster"],
+            ["la vaisselle", "de afwas, het servies"],
+            ["la fourchette", "de vork"],
+            ["le couteau", "het mes"],
+            ["la cuillère", "de lepel"],
+            ["le verre", "het glas"],
+            ["la tasse", "het kopje"],
+            ["l'assiette (f)", "het bord"],
+            ["la casserole", "de pan"],
+            ["la poêle", "de koekenpan"],
+            ["le couloir", "de gang"],
+            ["l'entrée (f)", "de hal, de ingang"],
+            ["le bureau", "het kantoor, het bureau"],
+            ["la clé", "de sleutel"],
+            ["la boîte aux lettres", "de brievenbus"],
+            ["la sonnette", "de bel"],
+            ["le chauffage", "de verwarming"],
+            ["la climatisation", "de airconditioning"],
+            ["l'électricité (f)", "de elektriciteit"],
+            ["l'eau (f)", "het water"],
+            ["le gaz", "het gas"],
+            ["le loyer", "de huur"],
+            ["le propriétaire", "de eigenaar, de huisbaas"],
+            ["le locataire", "de huurder"],
+            ["déménager", "verhuizen"],
+            ["emménager", "intrekken"],
+            ["habiter", "wonen"],
+            ["vivre", "leven, wonen"],
+            ["l'adresse (f)", "het adres"],
+            ["la région", "de regio"],
+            ["le département", "het departement"],
+            ["la province", "de provincie"],
+            ["le pays", "het land"],
+            ["l'étranger (m)", "het buitenland, de buitenlander"],
+            ["la nationalité", "de nationaliteit"],
+            ["le citoyen, la citoyenne", "de burger"],
+            ["le voisin, la voisine", "de buurman, de buurvrouw"],
+            ["le ménage", "het huishouden"],
+            ["nettoyer", "schoonmaken"],
+            ["balayer", "vegen"],
+            ["laver", "wassen"],
+            ["repasser", "strijken"],
+            ["jeter", "weggooien"],
+            ["les ordures (f)", "het afval"],
+            ["la poubelle", "de vuilnisbak"],
             ["les toilettes (f)", "het toilet, de wc"]
         ];
         const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
         this.vocabularyPairs = [...defaultVocab, ...customVocab];
     }
 
-    // Save only custom words
     saveCustomVocabulary() {
         const defaultCount = 107; // Number of default pairs
         const customVocab = this.vocabularyPairs.slice(defaultCount);
         localStorage.setItem('customVocabulary', JSON.stringify(customVocab));
     }
 
-    // --- Generate a Question ---
     generateQuestion() {
         let pairs;
         if (this.isPracticeMode) {
@@ -81,7 +183,6 @@ class VocabularyQuiz {
         };
     }
 
-    // --- Answer Checking ---
     normalizeAnswer(answer) {
         return answer.toLowerCase()
             .trim()
@@ -119,7 +220,6 @@ class VocabularyQuiz {
         return isCorrect;
     }
 
-    // --- Hard Words ---
     addToHardWords(hardWordData) {
         const exists = this.hardWords.some(hw =>
             hw.question === hardWordData.question && hw.answer === hardWordData.answer
@@ -140,13 +240,11 @@ class VocabularyQuiz {
         localStorage.setItem('hardWords', JSON.stringify(this.hardWords));
     }
 
-    // --- Add Custom Word ---
     addCustomWord(french, dutch) {
         this.vocabularyPairs.push([french.trim(), dutch.trim()]);
         this.saveCustomVocabulary();
     }
 
-    // --- UI Updates (optimized) ---
     updateUI() {
         const setText = (id, value) => {
             const el = document.getElementById(id);
@@ -162,10 +260,8 @@ class VocabularyQuiz {
     }
 }
 
-// --- Global instance ---
 let game = new VocabularyQuiz();
 
-// --- Screen Switching ---
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
@@ -180,7 +276,6 @@ function showMainMenu() {
     showScreen('main-menu');
 }
 
-// --- Quiz Flow ---
 function startQuiz() {
     game.isPracticeMode = false;
     game.customPracticeMode = false;
@@ -200,7 +295,6 @@ function practiceHardWords() {
     nextQuestion();
 }
 
-// --- PRACTICE CUSTOM WORDS MODE ---
 function practiceCustomWords() {
     const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
     if (customVocab.length === 0) {
@@ -225,7 +319,6 @@ function nextQuestion() {
         showMainMenu();
         return;
     }
-    // Display question
     let directionText = '';
     if (questionData.question.includes('🇫🇷 → 🇳🇱')) {
         directionText = '🇫🇷 → 🇳🇱';
@@ -244,7 +337,6 @@ function nextQuestion() {
     game.updateUI();
 }
 
-// --- Answer Submission ---
 function submitAnswer() {
     const userAnswer = document.getElementById('answer-input').value.trim();
     if (!userAnswer) {
@@ -286,7 +378,6 @@ function submitAnswer() {
     game.updateUI();
 }
 
-// --- Modal for Hard Words (add this to HTML too!) ---
 function showHardWordsModal() {
     const modal = document.getElementById('hard-words-modal');
     modal.classList.add('active');
@@ -301,7 +392,6 @@ function addToHardWords(shouldAdd) {
     setTimeout(nextQuestion, 500);
 }
 
-// --- Add Custom Words ---
 function addNewWord() {
     const frenchWord = document.getElementById('french-word').value.trim();
     const dutchWord = document.getElementById('dutch-word').value.trim();
@@ -317,7 +407,6 @@ function addNewWord() {
     alert('Word added successfully!');
 }
 
-// --- Show recent custom additions ---
 function updateRecentAdditions() {
     const container = document.getElementById('recent-list');
     const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
@@ -333,7 +422,6 @@ function updateRecentAdditions() {
     container.innerHTML = html;
 }
 
-// --- Hard Words List UI ---
 function updateHardWordsList() {
     const container = document.getElementById('hard-words-list');
     const practiceBtn = document.getElementById('practice-hard-btn');
@@ -378,25 +466,6 @@ function clearHardWords() {
     }
 }
 
-// --- Stats Display ---
-function updateStatsDisplay() {
-    const stats = game.sessionStats;
-    document.getElementById('total-questions').textContent = stats.total;
-    document.getElementById('correct-answers').textContent = stats.correct;
-    const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-    document.getElementById('accuracy').textContent = `${accuracy}%`;
-    // Direction-specific stats
-    const frToNl = stats.frenchToDutch;
-    const frToNlPct = frToNl.total > 0 ? Math.round((frToNl.correct / frToNl.total) * 100) : 0;
-    document.getElementById('fr-to-nl-stats').textContent =
-        `${frToNl.correct}/${frToNl.total} (${frToNlPct}%)`;
-    const nlToFr = stats.dutchToFrench;
-    const nlToFrPct = nlToFr.total > 0 ? Math.round((nlToFr.correct / nlToFr.total) * 100) : 0;
-    document.getElementById('nl-to-fr-stats').textContent =
-        `${nlToFr.correct}/${nlToFr.total} (${nlToFrPct}%)`;
-}
-
-// --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', function () {
     // Enter key submits answer
     const answerInput = document.getElementById('answer-input');
@@ -417,4 +486,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // Initial UI update
     game.updateUI();
+    updateRecentAdditions();
+    updateHardWordsList();
 });
