@@ -193,26 +193,36 @@ class VocabularyQuiz {
         return possibleAnswers.some(ans => ans === normalizedUser);
     }
 
-    submitAnswer(userAnswer) {
-        const isCorrect = this.checkAnswer(userAnswer);
-        this.sessionStats.total++;
-
-        if (isCorrect) {
-            this.sessionStats.correct++;
-            this.sessionStats[this.currentDirection.replace('_', 'To')].correct++;
-        } else {
-            this.sessionStats.incorrect++;
-            // Store pending hard word for modal
-            this.pendingHardWord = {
-                question: this.currentQuestion,
-                answer: this.currentAnswer,
-                direction: this.currentDirection
-            };
+         submitAnswer(userAnswer) {
+         const isCorrect = this.checkAnswer(userAnswer);
+         this.sessionStats.total++;
+ 
+         let statsKey = null;
+         if (this.currentDirection === 'french_to_dutch') {
+             statsKey = 'frenchToDutch';
+         } else if (this.currentDirection === 'dutch_to_french') {
+             statsKey = 'dutchToFrench';
+         }
+ 
+         if (isCorrect) {
+             this.sessionStats.correct++;
+             if (statsKey) {
+                 this.sessionStats[statsKey].correct++;
+             }
+         } else {
+             this.sessionStats.incorrect++;
+             // Store pending hard word for modal
+             this.pendingHardWord = {
+                 question: this.currentQuestion,
+                 answer: this.currentAnswer,
+                 direction: this.currentDirection
+             };
+         } 
+        if (statsKey) {
+           this.sessionStats[statsKey].total++;
         }
-
-        this.sessionStats[this.currentDirection.replace('_', 'To')].total++;
-        return isCorrect;
-    }
+         return isCorrect;
+     }
 
     addToHardWords(hardWordData) {
         // Check if already exists
