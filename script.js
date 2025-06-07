@@ -407,8 +407,6 @@ function submitAnswer() {
 
 function showHardWordsModal() {
     const modal = document.getElementById('hard-words-modal');
-    // Block page scroll while modal is open
-    document.body.style.overflow = 'hidden';
     modal.classList.add('active');
 }
 function addToHardWords(shouldAdd) {
@@ -418,8 +416,6 @@ function addToHardWords(shouldAdd) {
         updateHardWordsList();
     }
     document.getElementById('hard-words-modal').classList.remove('active');
-    // Restore scroll when modal closes
-    document.body.style.overflow = '';
     game.pendingHardWord = null;
     setTimeout(nextQuestion, 500);
 }
@@ -521,13 +517,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     document.getElementById('french-word').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') document.getElementById('dutch-word').focus();
-    });
-    // Modal: close on ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            document.getElementById('hard-words-modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
     });
     // Initial UI update
     game.updateUI();
