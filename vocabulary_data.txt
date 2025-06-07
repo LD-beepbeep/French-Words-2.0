@@ -1,99 +1,107 @@
-l'ado (m / f)|de puber (14-18 jaar)
-l'adolescence (f)|de puberteit
-l'adolescent (m) / l'adolescente (f)|de puber (14-18 jaar)
-l'adulte (m / f)|de volwassene
-l'âge adulte (m)|de volwassenheid
-l'aîné(e)|de oudste
-le beau-fils|de schoonzoon
-le beau-frère|de schoonbroer, de stiefbroer
-le beau-père|de schoonvader, de stiefvader
-les beaux-parents (m)|de schoonouders, de stiefouders
-la belle-fille|de schoondochter
-la belle-mère|de schoonmoeder, de stiefmoeder
-la belle-sœur|de schoonzus, de stiefzus
-le cadet / la cadette|de jongste
-le couple|het koppel
-le cousin / la cousine|de neef / de nicht
-le demi-frère / la demi-sœur|de halfbroer / de halfzus
-le divorce|de scheiding
-l'enfance (f)|de kindertijd
-l'enfant unique (m / f)|het enig kind
-la famille recomposée|het nieuw samengestelde gezin
-la femme|de vrouw, de echtgenote
-le filleul / la filleule|het petekind, het metekind
-les jumeaux (m) / les jumelles (f)|de tweeling
-le mari|de man, de echtgenoot
-le mariage|het huwelijk
-la marraine|de meter
-le membre de la famille|het familielid
-la mort|het overlijden, de dood
-la naissance|de geboorte
-le neveu|de neef
-la nièce|de nicht
-le nom de famille|de familienaam
-le parrain|de peter
-le / la partenaire|de partner
-la personne âgée|de bejaarde
-le petit ami / la petite amie|het vriendje / het vriendinnetje, het lief
-la petite-fille / le petit-fils|de kleindochter / de kleinzoon
-le prénom|de voornaam
-le / la retraité(e)|de gepensioneerde
-le veuf / la veuve|de weduwnaar / de weduwe
-célibataire|vrijgezel
-majeur(e)|meerderjarig
-marié(e)|getrouwd
-mineur(e)|minderjarig
-vieux, vieille|oud
-avoir (treize) ans|(dertien) jaar oud zijn
-divorcer|scheiden
-être amoureux, amoureuse (de)|verliefd zijn (op)
-être né(e)|geboren zijn
-être (quatre)|met (z'n vieren) zijn
-ressembler à|lijken op
-s'appeler|heten
-se marier avec|huwen met
-(se) présenter|(zich) voorstellen
-se séparer|scheiden, uiteengaan
-le développement|de ontwikkeling
-amusant(e)|leuk, grappig
-bête|dom
-branché(e)|hip
-calme|rustig
-comique|grappig
-cool|cool
-courageux, courageuse|moedig
-créatif, créative|creatief
-curieux, curieuse|nieuwsgierig
-déprimé(e)|depressief, neerslachtig
-doux, douce|zacht
-drôle|grappig
-dur(e)|hard, taai
-ennuyeux, ennuyeuse|saai
-fâché(e)|boos, kwaad
-gentil(le)|lief, vriendelijk
-honnête|eerlijk
-intolérant(e)|onverdraagzaam
-jaloux, jalouse|jaloers
-joyeux, joyeuse|vrolijk
-macho|macho
-marrant(e)|grappig
-méchant(e)|stout, kwaadaardig
-nerveux, nerveuse|zenuwachtig
-nul(le)|stom
-ouvert(e)|open
-ridicule|belachelijk
-sage|braaf, wijs
-sérieux, sérieuse|ernstig
-sévère|streng
-sincère|oprecht
-sociable|sociaal
-stressé(e)|gestresseerd
-têtu(e)|koppig
-timide|verlegen
-détester|haten
-énerver|op de zenuwen werken
-être de bonne / mauvaise humeur|goed- / slechtgezind zijn
-être passionné(e) de|heel geboeid zijn door
-irriter|op de zenuwen werken
-préférer|liever hebben, verkiezen
-se débrouiller|zich redden
+la banlieue|de buitenwijken
+la campagne|het platteland
+la commune|de gemeente
+le pays|het land
+la région|de streek, de regio
+le loft|de loft
+le logement|de woonst, de slaapgelegenheid
+la maison de rangée|de rijwoning
+la micro-maison|de microwoning
+le studio|de studio
+la Tiny|de microwoning, het tiny house
+la villa|de villa
+abordable|betaalbaar
+agréable|aangenaam, gezellig
+cher, chère|duur
+clos(e)|afgesloten
+confortable|comfortabel
+écologique|ecologisch
+équipé(e) (de)|voorzien (van), uitgerust (met)
+étroit(e)|smal
+magnifique|prachtig
+pratique|praktisch
+spacieux, spacieuse|ruim
+rose|roze
+jaune|geel
+blanc, blanche|wit
+vert(e)|groen
+noir(e)|zwart
+brun(e)|bruin
+rouge|rood
+mauve|paars
+bleu(e)|blauw
+orange|oranje
+gris(e)|grijs
+construire|bouwen
+déménager|verhuizen
+entretenir|onderhouden
+nettoyer|poetsen
+prendre une douche|zich douchen
+ranger|opruimen
+réparer|herstellen
+se changer|zich omkleden
+se déshabiller|zich uitkleden
+se réveiller|wakker worden
+vivre|wonen, leven
+l'ascenseur (m)|de lift
+l'armoire (f)|de kast
+la baignoire|het bad
+le balai|de bezem
+le barbecue|de barbecue
+le cadre|de lijst, de omlijsting
+la cafetière|het koffiezetapparaat
+la casserole|de kookpan
+la chaise|de stoel
+le congélateur|de diepvriezer
+la douche|de douche
+le drap|het laken
+l'étagère (f)|het rek
+l'évier (m)|de gootsteen
+le fauteuil|de zetel
+la fenêtre|het raam
+la garde-robe|de garderobe, de kleerkast
+le grille-pain|de broodrooster
+le haut-parleur|de luidspreker, de (muziek)box
+la lampe|de lamp
+le lavabo|de wastafel
+le lave-vaisselle|de vaatwasser
+le lit|het bed
+le miroir|de spiegel
+l'ordinateur (m)|de computer
+l'oreiller (m)|het hoofdkussen
+le panier à linge|de linnenmand
+le poster|de poster
+la poubelle|de vuilnisbak
+le rasoir|het scheerapparaat
+le réveil|de wekker
+le rideau|het gordijn
+le robinet|de kraan
+le tableau|het schilderij
+la table de nuit|het nachtkastje
+le tapis|het tapijt
+la télé|de televisie
+la télécommande|de afstandsbediening
+la tondeuse à gazon|de grasmaaier
+le bureau|het bureau
+la cabane de jardin|het tuinhuis
+la cave|de kelder
+la chambre à coucher|de slaapkamer
+le couloir|de gang
+la cuisine|de keuken
+le débarras|de berging
+le garage|de garage
+le grenier|de zolder
+le hall (d'entrée)|de (inkom)hal
+le jardin|de tuin
+le living|de woonkamer
+la mezzanine|de mezzanine, de tussenverdieping
+la pièce|de kamer, het vertrek
+la piscine|het zwembad
+le premier étage|de eerste verdieping
+le rez-de-chaussée|de begane grond
+la salle à manger|de eetkamer
+la salle de bains|de badkamer
+la salle de séjour|de woonkamer
+le salon|het salon
+la terrasse|het terras
+les toilettes (f)|het toilet, de wc
