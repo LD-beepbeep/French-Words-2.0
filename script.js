@@ -296,6 +296,7 @@ function showMainMenu() {
     game.customPracticeMode = false;
     game.isPracticeMode = false;
     game.updateUI();
+    updateHardWordsList();
     showScreen('main-menu');
 }
 
@@ -358,6 +359,7 @@ function nextQuestion() {
     document.getElementById('feedback').textContent = '';
     document.getElementById('feedback').className = 'feedback';
     game.updateUI();
+    updateHardWordsList();
 }
 
 function submitAnswer() {
@@ -380,6 +382,7 @@ function submitAnswer() {
                     if (hardWordIndex !== -1) {
                         game.removeFromHardWords(hardWordIndex);
                         game.updateUI();
+                        updateHardWordsList();
                     }
                 }
                 setTimeout(nextQuestion, 900);
@@ -399,6 +402,7 @@ function submitAnswer() {
         }, 900);
     }
     game.updateUI();
+    updateHardWordsList();
 }
 
 function showHardWordsModal() {
@@ -409,6 +413,7 @@ function addToHardWords(shouldAdd) {
     if (shouldAdd && game.pendingHardWord) {
         game.addToHardWords(game.pendingHardWord);
         game.updateUI();
+        updateHardWordsList();
     }
     document.getElementById('hard-words-modal').classList.remove('active');
     game.pendingHardWord = null;
@@ -458,12 +463,18 @@ function updateHardWordsList() {
     let html = `<h3>Hard Words (${game.hardWords.length}):</h3>`;
     game.hardWords.forEach((hardWord, index) => {
         let wordDisplay = '';
-        if (hardWord.question.includes('🇫🇷 → 🇳🇱')) {
+        if (hardWord.question && hardWord.question.includes('🇫🇷 → 🇳🇱')) {
             const word = hardWord.question.replace('🇫🇷 → 🇳🇱  Translate: ', '');
             wordDisplay = `${word} (French) → ${hardWord.answer} (Dutch)`;
-        } else if (hardWord.question.includes('🇳🇱 → 🇫🇷')) {
+        } else if (hardWord.question && hardWord.question.includes('🇳🇱 → 🇫🇷')) {
             const word = hardWord.question.replace('🇳🇱 → 🇫🇷  Translate: ', '');
             wordDisplay = `${word} (Dutch) → ${hardWord.answer} (French)`;
+        } else if (hardWord.direction === 'french_to_dutch') {
+            wordDisplay = `${hardWord.question || ''} (French) → ${hardWord.answer} (Dutch)`;
+        } else if (hardWord.direction === 'dutch_to_french') {
+            wordDisplay = `${hardWord.question || ''} (Dutch) → ${hardWord.answer} (French)`;
+        } else {
+            wordDisplay = `${hardWord.question || ''} → ${hardWord.answer}`;
         }
         html += `
             <div class="hard-word-item">
