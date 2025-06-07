@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French-Dutch Vocabulary Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 French-Dutch Vocabulary Quiz</h1>
+            <p>Master your French vocabulary for your exam!</p>
+        </header>
+
+        <!-- Main Menu -->
+        <div id="main-menu" class="screen active">
+            <div class="menu-options">
+                <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+                <button class="btn btn-secondary" onclick="showAddWords()">Add New Words</button>
+                <button class="btn btn-secondary" onclick="showHardWords()">View Hard Words</button>
+                <button class="btn btn-secondary" onclick="showStats()">View Statistics</button>
+            </div>
+            
+            <div class="vocab-info">
+                <p>📚 Total vocabulary: <span id="vocab-count">107</span> words</p>
+                <p>📝 Hard words: <span id="hard-count">0</span> words</p>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <div class="score-display">
+                    <span>Score: <span id="current-score">0/0</span> (<span id="score-percentage">0%</span>)</span>
+                    <span>Question: <span id="question-number">1</span></span>
+                </div>
+                <button class="btn btn-small" onclick="showQuizMenu()">Menu</button>
+            </div>
+
+            <div class="question-container">
+                <div class="question-direction" id="question-direction">🇫🇷 → 🇳🇱</div>
+                <div class="question-text" id="question-text">Loading...</div>
+                
+                <div class="answer-section">
+                    <input type="text" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+                    <button class="btn btn-primary" onclick="submitAnswer()">Submit</button>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Add Words Screen -->
+        <div id="add-words-screen" class="screen">
+            <div class="screen-header">
+                <h2>Add New Vocabulary</h2>
+                <button class="btn btn-secondary" onclick="showMainMenu()">Back to Menu</button>
+            </div>
+            
+            <div class="add-words-form">
+                <div class="input-group">
+                    <label for="french-word">French Word/Phrase:</label>
+                    <input type="text" id="french-word" placeholder="e.g., la maison">
+                </div>
+                
+                <div class="input-group">
+                    <label for="dutch-word">Dutch Translation:</label>
+                    <input type="text" id="dutch-word" placeholder="e.g., het huis">
+                </div>
+                
+                <button class="btn btn-primary" onclick="addNewWord()">Add Word</button>
+            </div>
+            
+            <div id="recent-additions" class="recent-additions">
+                <h3>Recently Added Words:</h3>
+                <div id="recent-list"></div>
+            </div>
+        </div>
+
+        <!-- Hard Words Screen -->
+        <div id="hard-words-screen" class="screen">
+            <div class="screen-header">
+                <h2>Hard Words List</h2>
+                <button class="btn btn-secondary" onclick="showMainMenu()">Back to Menu</button>
+            </div>
+            
+            <div id="hard-words-list" class="hard-words-list">
+                <p>No hard words yet! Words you get wrong can be added to this list for focused practice.</p>
+            </div>
+            
+            <div class="hard-words-actions">
+                <button class="btn btn-primary" onclick="practiceHardWords()" id="practice-hard-btn" style="display: none;">Practice Hard Words</button>
+                <button class="btn btn-danger" onclick="clearHardWords()" id="clear-hard-btn" style="display: none;">Clear All Hard Words</button>
+            </div>
+        </div>
+
+        <!-- Statistics Screen -->
+        <div id="stats-screen" class="screen">
+            <div class="screen-header">
+                <h2>Session Statistics</h2>
+                <button class="btn btn-secondary" onclick="showMainMenu()">Back to Menu</button>
+            </div>
+            
+            <div id="stats-content" class="stats-content">
+                <div class="stat-card">
+                    <h3>Overall Performance</h3>
+                    <p>Total Questions: <span id="total-questions">0</span></p>
+                    <p>Correct Answers: <span id="correct-answers">0</span></p>
+                    <p>Accuracy: <span id="accuracy">0%</span></p>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>By Direction</h3>
+                    <p>🇫🇷 → 🇳🇱: <span id="fr-to-nl-stats">0/0 (0%)</span></p>
+                    <p>🇳🇱 → 🇫🇷: <span id="nl-to-fr-stats">0/0 (0%)</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Hard Words Modal -->
+    <div id="hard-words-modal" class="modal">
+        <div class="modal-content">
+            <p>Add this word to your hard words list?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="addToHardWords(true)">Yes</button>
+                <button class="btn btn-secondary" onclick="addToHardWords(false)">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
