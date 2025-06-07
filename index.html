@@ -36,6 +36,7 @@
             width: 100%;
             backdrop-filter: blur(9px);
             border: 1.5px solid var(--border);
+            position: relative;
         }
         h1, h2, h3 {
             font-weight: 700;
@@ -60,9 +61,9 @@
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 2px 14px rgba(60,80,120,0.11);
-            transition: background 0.14s, box-shadow 0.14s;
+            transition: background 0.14s, box-shadow 0.14s, transform 0.09s;
         }
-        .btn:active, .btn:focus { background: #2568c8; outline: none;}
+        .btn:active, .btn:focus { background: #2568c8; outline: none; transform: scale(0.98);}
         .btn-accent { background: var(--accent); }
         .btn-accent:active, .btn-accent:focus { background: #23b388;}
         .btn-secondary {
@@ -138,16 +139,30 @@
         /* Modal */
         .modal {
             display: none;
-            position: fixed; z-index: 1000;
+            position: fixed; z-index: 10000;
             left: 0; top: 0; width: 100vw; height: 100vh;
-            background: rgba(21,28,40,0.85); justify-content: center; align-items: center;
+            background: rgba(21,28,40,0.65); 
         }
         .modal.active {
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .modal-content {
-            background: #212e42; padding: 2em 1.3em; border-radius: 1.3em; box-shadow: 0 2px 14px #2223;
-            max-width: 90vw; text-align: center; color: var(--text-light);
+            background: rgba(30, 44, 71, 0.97);
+            padding: 2.3em 2em 1.7em 2em;
+            border-radius: 1.5em;
+            box-shadow: 0 8px 40px #1a1830c8, 0 1.5px 5px rgba(60,80,120,0.08);
+            max-width: 95vw;
+            width: 340px;
+            text-align: center;
+            color: var(--text-light);
+            position: relative;
+            animation: modalpop 0.19s cubic-bezier(0.26,0.6,0.41,1.3);
+        }
+        @keyframes modalpop {
+            from { transform: scale(0.88); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         .modal-content h3 { color: var(--primary);}
         /* Stats */
@@ -168,16 +183,15 @@
         .stats-table td {
             font-weight: 500;
         }
-        /* Responsive */
         @media (max-width: 600px) {
             .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
             h1 { font-size: 1.26rem;}
+            .modal-content {padding: 1.2em 0.5em;}
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- MAIN MENU -->
         <div id="main-menu" class="screen active">
             <h1>French-Dutch Vocabulary Trainer</h1>
             <button class="btn" onclick="startQuiz()">Start Quiz</button>
@@ -205,8 +219,6 @@
                 <button id="clear-hard-btn" class="btn btn-secondary" onclick="clearHardWords()" style="display:none;">Clear Hard Words</button>
             </div>
         </div>
-
-        <!-- QUIZ -->
         <div id="quiz-screen" class="screen">
             <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right; margin-top:-0.7em;">Back</button>
             <h2 style="margin-bottom:0.6em;">Quiz</h2>
@@ -224,8 +236,6 @@
                 <p>Question #: <span id="question-number"></span></p>
             </div>
         </div>
-
-        <!-- STATS -->
         <div id="stats-screen" class="screen">
             <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right;">Back</button>
             <h2>Stats</h2>
@@ -256,7 +266,6 @@
                 </tr>
             </table>
         </div>
-
         <!-- MODAL -->
         <div id="hard-words-modal" class="modal">
             <div class="modal-content">
