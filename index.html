@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>French-Dutch Vocabulary Trainer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google Fonts for a modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -36,7 +35,7 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 40px rgba(30,40,80,0.15), 0 1.5px 5px rgba(60,80,120,0.08);
             padding: 2.7rem 2.2rem 2rem 2.2rem;
-            max-width: 450px;
+            max-width: 430px;
             width: 100%;
             backdrop-filter: blur(9px);
             border: 1.5px solid var(--border);
@@ -80,6 +79,7 @@
         }
         .screen { display: none; }
         .screen.active { display: block; }
+        .menu-list { display: flex; flex-direction: column; gap: 1em; }
         .inputs-row {
             display: flex;
             gap: 0.5em;
@@ -143,13 +143,13 @@
         /* Modal */
         .modal {
             display: none;
-            position: fixed; 
+            position: fixed;
             z-index: 10000;
-            left: 0; 
-            top: 0; 
-            width: 100vw; 
+            left: 0;
+            top: 0;
+            width: 100vw;
             height: 100vh;
-            background: rgba(21,28,40,0.6); 
+            background: rgba(21,28,40,0.6);
             align-items: center;
             justify-content: center;
         }
@@ -167,13 +167,19 @@
             color: var(--text-light);
             position: relative;
             animation: modalpop 0.19s cubic-bezier(0.26,0.6,0.41,1.3);
-            margin: auto;
+            margin: 0 auto;
         }
         @keyframes modalpop {
             from { transform: scale(0.88); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
         .modal-content h3 { color: var(--primary);}
+        .back-btn {
+            margin-bottom: 1.2em;
+        }
+        .centered-title {
+            text-align: center;
+        }
         /* Stats */
         .stats-table {
             width: 100%;
@@ -201,17 +207,70 @@
 </head>
 <body>
     <div class="container">
+        <!-- Main Menu -->
         <div id="main-menu" class="screen active">
-            <h1>French-Dutch Vocabulary Trainer</h1>
-            <button class="btn" onclick="startQuiz()">Start Quiz</button>
-            <button class="btn" onclick="practiceHardWords()">Practice Hard Words</button>
-            <button id="practice-custom-btn" class="btn btn-accent" onclick="practiceCustomWords()">Practice Custom Words</button>
-            <button class="btn btn-secondary" onclick="showStatsScreen()" style="float:right;">Stats</button>
-            <div style="margin: 1.3em 0 1.5em 0;">
+            <h1 class="centered-title">French-Dutch Vocabulary Trainer</h1>
+            <div class="menu-list">
+                <button class="btn" onclick="showScreen('quiz-menu')">Start Quiz</button>
+                <button class="btn" onclick="showScreen('practice-hard-menu')">Practice Hard Words</button>
+                <button class="btn btn-accent" onclick="showScreen('practice-custom-menu')">Practice Custom Words</button>
+                <button class="btn btn-secondary" onclick="showScreen('add-word-menu')">Add New Word</button>
+                <button class="btn btn-secondary" onclick="showStatsScreen()">View Stats</button>
+            </div>
+            <div style="margin: 1.3em 0 1.2em 0;">
                 <p>Words in vocabulary: <span id="vocab-count"></span></p>
                 <p>Hard words: <span id="hard-count"></span></p>
             </div>
-            <h2>Add Custom Word</h2>
+        </div>
+        <!-- Quiz -->
+        <div id="quiz-screen" class="screen">
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Quiz</h2>
+            <div style="margin-bottom:1.5em; text-align:center;">
+                <span id="question-direction" style="font-weight:600; color:var(--primary);"></span>
+                <span id="question-text" style="font-weight:500;"></span>
+            </div>
+            <div class="inputs-row" style="margin-bottom:0;">
+                <input type="text" id="answer-input" autocomplete="off" placeholder="Your answer">
+                <button class="btn" onclick="submitAnswer()">Submit</button>
+            </div>
+            <div id="feedback" class="feedback"></div>
+            <div style="margin-top:1.3em; text-align:center;">
+                <p>Score: <span id="current-score"></span> (<span id="score-percentage"></span>)</p>
+                <p>Question #: <span id="question-number"></span></p>
+            </div>
+        </div>
+        <!-- Practice Hard Words -->
+        <div id="practice-hard-menu" class="screen">
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Practice Hard Words</h2>
+            <div style="text-align:center; margin-bottom:1.2em;">
+                <button class="btn btn-accent" onclick="practiceHardWords()">Start Practicing</button>
+            </div>
+            <div>
+                <h3>Recently Added Words</h3>
+                <div id="recent-list-hard"></div>
+                <h3>Hard Words List</h3>
+                <div id="hard-words-list"></div>
+                <button id="clear-hard-btn" class="btn btn-secondary" onclick="clearHardWords()" style="display:none;">Clear Hard Words</button>
+            </div>
+        </div>
+        <!-- Practice Custom Words -->
+        <div id="practice-custom-menu" class="screen">
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Practice Custom Words</h2>
+            <div style="text-align:center; margin-bottom:1.2em;">
+                <button class="btn btn-accent" onclick="practiceCustomWords()">Start Custom Practice</button>
+            </div>
+            <div>
+                <h3>Recently Added Words</h3>
+                <div id="recent-list-custom"></div>
+            </div>
+        </div>
+        <!-- Add Word -->
+        <div id="add-word-menu" class="screen">
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Add Custom Word</h2>
             <div class="inputs-row">
                 <input type="text" id="french-word" placeholder="French word">
                 <input type="text" id="dutch-word" placeholder="Dutch translation">
@@ -221,33 +280,11 @@
                 <h3>Recently Added Words</h3>
                 <div id="recent-list"></div>
             </div>
-            <div>
-                <h3>Hard Words List</h3>
-                <div id="hard-words-list"></div>
-                <button id="practice-hard-btn" class="btn btn-accent" onclick="practiceHardWords()" style="display:none;">Quiz Hard Words</button>
-                <button id="clear-hard-btn" class="btn btn-secondary" onclick="clearHardWords()" style="display:none;">Clear Hard Words</button>
-            </div>
         </div>
-        <div id="quiz-screen" class="screen">
-            <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right; margin-top:-0.7em;">Back</button>
-            <h2 style="margin-bottom:0.6em;">Quiz</h2>
-            <div style="margin-bottom:1.5em;">
-                <span id="question-direction" style="font-weight:600; color:var(--primary);"></span>
-                <span id="question-text" style="font-weight:500;"></span>
-            </div>
-            <div class="inputs-row" style="margin-bottom:0;">
-                <input type="text" id="answer-input" autocomplete="off" placeholder="Your answer">
-                <button class="btn" onclick="submitAnswer()">Submit</button>
-            </div>
-            <div id="feedback" class="feedback"></div>
-            <div style="margin-top:1.3em;">
-                <p>Score: <span id="current-score"></span> (<span id="score-percentage"></span>)</p>
-                <p>Question #: <span id="question-number"></span></p>
-            </div>
-        </div>
+        <!-- Stats -->
         <div id="stats-screen" class="screen">
-            <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right;">Back</button>
-            <h2>Stats</h2>
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Stats</h2>
             <table class="stats-table">
                 <tr>
                     <th>Type</th>
@@ -275,8 +312,8 @@
                 </tr>
             </table>
         </div>
-        <!-- MODAL -->
-        <div id="hard-words-modal" class="modal">
+        <!-- Modal -->
+        <div id="hard-words-modal" class="modal" tabindex="-1">
             <div class="modal-content">
                 <h3>Add to Hard Words?</h3>
                 <p>This word will be added to your hard words list for extra practice. Continue?</p>
