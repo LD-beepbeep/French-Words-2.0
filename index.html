@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>French-Dutch Vocabulary Trainer</title>
+    <title>Vocabulary Trainer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,7 +35,7 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 40px rgba(30,40,80,0.15), 0 1.5px 5px rgba(60,80,120,0.08);
             padding: 2.7rem 2.2rem 2rem 2.2rem;
-            max-width: 430px;
+            max-width: 440px;
             width: 100%;
             backdrop-filter: blur(9px);
             border: 1.5px solid var(--border);
@@ -244,7 +244,7 @@
         </div>
         <!-- Main Menu -->
         <div id="main-menu" class="screen active">
-            <h1 class="centered-title">French-Dutch Vocabulary Trainer</h1>
+            <h1 class="centered-title">Vocabulary Trainer</h1>
             <div class="menu-list">
                 <button class="btn" onclick="showScreen('quiz-menu')">Start Quiz</button>
                 <button class="btn" onclick="showScreen('practice-hard-menu')">Practice Hard Words</button>
@@ -255,6 +255,9 @@
             <div style="margin: 1.3em 0 1.2em 0;">
                 <p>Words in vocabulary: <span id="vocab-count"></span></p>
                 <p>Hard words: <span id="hard-count"></span></p>
+            </div>
+            <div class="footer">
+                Made by Lars
             </div>
         </div>
         <!-- Quiz -->
@@ -303,8 +306,9 @@
             <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
             <h2 class="centered-title">Add Custom Word</h2>
             <div class="inputs-row">
-                <input type="text" id="french-word" placeholder="French word">
-                <input type="text" id="dutch-word" placeholder="Dutch translation">
+                <input type="text" id="custom-french-word" placeholder="French word">
+                <input type="text" id="custom-dutch-word" placeholder="Dutch translation">
+                <input type="text" id="custom-english-word" placeholder="English translation (optional)">
                 <button class="btn" onclick="addNewWord()">Add</button>
             </div>
             <div>
@@ -351,9 +355,6 @@
                 <button onclick="addToHardWords(true)" class="btn btn-accent">Add</button>
                 <button onclick="addToHardWords(false)" class="btn btn-secondary">Skip</button>
             </div>
-        </div>
-        <div class="footer">
-            Made by Lars
         </div>
     </div>
     <script src="script.js"></script>
