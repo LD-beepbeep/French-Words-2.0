@@ -17,6 +17,7 @@ class QuizGame:
         self.vocabulary_pairs: List[Tuple[str, str]] = []
         self.score = 0
         self.total_questions = 0
+        self.hard_words: List[Tuple[str, str, str]] = []  # (question, answer, direction)
         self.session_stats = {
             'correct': 0,
             'incorrect': 0,
@@ -49,7 +50,7 @@ class QuizGame:
         print("• Type your answer and press Enter")
         print("• Get immediate feedback on each answer")
         print("• Track your progress throughout the session")
-        print("• Type 'quit' to exit or 'stats' to see your progress")
+        print("• Type 'quit' to exit, 'stats' to see your progress, or 'hard' to see hard words")
         print("\n" + "=" * 50)
     
     def generate_question(self) -> Tuple[str, str, str]:
@@ -93,6 +94,9 @@ class QuizGame:
         elif user_answer.lower() in ['stats', 'statistics', 's']:
             self.display_stats()
             return True
+        elif user_answer.lower() in ['hard', 'hardwords', 'h']:
+            self.display_hard_words()
+            return True
         elif not user_answer:
             print("⚠️  Empty answer! Please try again.")
             return True
@@ -111,6 +115,12 @@ class QuizGame:
         else:
             self.session_stats['incorrect'] += 1
             print(f"❌ Incorrect. The correct answer is: {correct_answer}")
+            
+            # Ask if user wants to add to hard words list
+            add_to_hard = input("Add this word to your hard words list? (y/n): ").strip().lower()
+            if add_to_hard in ['y', 'yes']:
+                self.hard_words.append((question, correct_answer, direction))
+                print("📝 Added to hard words list!")
         
         # Show current score
         percentage = (self.score / self.total_questions) * 100
@@ -150,6 +160,89 @@ class QuizGame:
             print(f"🇳🇱 → 🇫🇷: {nl_to_fr['correct']}/{nl_to_fr['total']} ({nl_to_fr_pct:.1f}%)")
         
         print("=" * 40)
+    
+    def display_hard_words(self):
+        """Display the current hard words list"""
+        print("\n" + "=" * 40)
+        print("📝 HARD WORDS LIST")
+        print("=" * 40)
+        
+        if not self.hard_words:
+            print("No hard words in your list yet!")
+            print("When you get a question wrong, you can add it to this list.")
+            return
+        
+        print(f"You have {len(self.hard_words)} hard words:")
+        print()
+        
+        for i, (question, answer, direction) in enumerate(self.hard_words, 1):
+            # Clean up the question to show just the word
+            if "🇫🇷 → 🇳🇱" in question:
+                word = question.replace("🇫🇷 → 🇳🇱  Translate: ", "")
+                print(f"{i}. {word} (French) → {answer} (Dutch)")
+            elif "🇳🇱 → 🇫🇷" in question:
+                word = question.replace("🇳🇱 → 🇫🇷  Translate: ", "")
+                print(f"{i}. {word} (Dutch) → {answer} (French)")
+        
+        print("=" * 40)
+        
+        # Ask if user wants to practice hard words
+        practice_hard = input("\nWould you like to practice only your hard words? (y/n): ").strip().lower()
+        if practice_hard in ['y', 'yes']:
+            self.practice_hard_words()
+    
+    def practice_hard_words(self):
+        """Practice session focused on hard words only"""
+        if not self.hard_words:
+            print("No hard words to practice!")
+            return
+        
+        print(f"\n🎯 HARD WORDS PRACTICE SESSION")
+        print(f"Practicing {len(self.hard_words)} difficult words")
+        print("=" * 50)
+        
+        # Create a temporary copy of hard words for practice
+        practice_words = self.hard_words.copy()
+        random.shuffle(practice_words)
+        
+        correct_in_practice = 0
+        total_in_practice = 0
+        
+        for question, correct_answer, direction in practice_words:
+            print(f"\n📝 Hard Word Practice")
+            print(question)
+            
+            user_answer = input("Your answer: ").strip()
+            
+            # Handle special commands
+            if user_answer.lower() in ['quit', 'exit', 'q']:
+                break
+            elif not user_answer:
+                print("⚠️  Empty answer! Skipping...")
+                continue
+            
+            total_in_practice += 1
+            is_correct = self.parser.check_answer(user_answer, correct_answer)
+            
+            if is_correct:
+                correct_in_practice += 1
+                print("✅ Correct! Great improvement!")
+                
+                # Ask if they want to remove from hard words
+                remove_word = input("Remove this word from hard words list? (y/n): ").strip().lower()
+                if remove_word in ['y', 'yes']:
+                    self.hard_words.remove((question, correct_answer, direction))
+                    print("🗑️  Removed from hard words list!")
+            else:
+                print(f"❌ Still incorrect. The answer is: {correct_answer}")
+                print("Keep practicing this one!")
+        
+        # Show practice results
+        if total_in_practice > 0:
+            practice_percentage = (correct_in_practice / total_in_practice) * 100
+            print(f"\n🎯 Hard Words Practice Results:")
+            print(f"Score: {correct_in_practice}/{total_in_practice} ({practice_percentage:.1f}%)")
+            print(f"Hard words remaining: {len(self.hard_words)}")
     
     def display_final_results(self):
         """Display final results when quitting"""
@@ -196,11 +289,25 @@ class QuizGame:
                 # Ask if user wants to continue after every 5 questions
                 if self.total_questions > 0 and self.total_questions % 5 == 0:
                     print(f"\n🎉 You've completed {self.total_questions} questions!")
-                    continue_input = input("Continue practicing? (y/n/stats): ").lower().strip()
+                    
+                    # Show hard words list every 5 questions if there are any
+                    if self.hard_words:
+                        print(f"\n📝 Your current hard words list ({len(self.hard_words)} words):")
+                        for i, (question, answer, direction) in enumerate(self.hard_words, 1):
+                            if "🇫🇷 → 🇳🇱" in question:
+                                word = question.replace("🇫🇷 → 🇳🇱  Translate: ", "")
+                                print(f"  {i}. {word} → {answer}")
+                            elif "🇳🇱 → 🇫🇷" in question:
+                                word = question.replace("🇳🇱 → 🇫🇷  Translate: ", "")
+                                print(f"  {i}. {word} → {answer}")
+                    
+                    continue_input = input("Continue practicing? (y/n/stats/hard): ").lower().strip()
                     if continue_input in ['n', 'no', 'quit', 'exit']:
                         break
                     elif continue_input in ['stats', 'statistics', 's']:
                         self.display_stats()
+                    elif continue_input in ['hard', 'hardwords', 'h']:
+                        self.display_hard_words()
         
         except KeyboardInterrupt:
             print("\n\n⚠️  Quiz interrupted by user")
