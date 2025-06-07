@@ -1,7 +1,13 @@
-// --- Vocabulary Quiz Class ---
+// Language keys for per-language custom words
+const CUSTOM_KEYS = {
+    "fr-nl": "customVocabulary_fr_nl",
+    "en-nl": "customVocabulary_en_nl",
+    "en-fr": "customVocabulary_en_fr"
+};
+
 class VocabularyQuiz {
     constructor() {
-        this.premadeVocabulary = [
+        this.premadeVocabulary = [ // [French, Dutch, English]
             ["la banlieue", "de buitenwijken", "the suburbs"],
             ["la campagne", "het platteland", "the countryside"],
             ["le village", "het dorp", "the village"],
@@ -112,11 +118,11 @@ class VocabularyQuiz {
             ["la poubelle", "de vuilnisbak", "the bin"],
             ["les toilettes (f)", "het toilet, de wc", "the toilet"]
         ];
-        this.customVocabulary = JSON.parse(localStorage.getItem('customVocabulary')) || [];
+        this.quizLanguageMode = "fr-nl";
+        this.customVocabulary = this.loadCustomWords(this.quizLanguageMode);
         this.hardWords = JSON.parse(localStorage.getItem('hardWords')) || [];
         this.customPracticeMode = false;
         this.isPracticeMode = false;
-        this.quizLanguageMode = "fr-nl"; // "fr-nl", "en-nl", or "en-fr"
         this.sessionStats = {
             correct: 0, incorrect: 0, total: 0,
             frenchToDutch: { correct: 0, total: 0 },
@@ -135,20 +141,30 @@ class VocabularyQuiz {
     }
 
     getAllWords() {
-        // Only official and your custom words, not randoms
-        // For custom, fill with three columns (french, dutch, english) and empty string for English if not set
         return [
             ...this.premadeVocabulary,
-            ...this.customVocabulary.map(entry => {
-                if (entry.length === 3) return entry;
-                if (entry.length === 2) return [entry[0], entry[1], ""];
-                return ["", "", ""];
-            })
+            ...this.customVocabulary
         ];
     }
 
-    saveCustomVocabulary() {
-        localStorage.setItem('customVocabulary', JSON.stringify(this.customVocabulary));
+    getCustomKey() {
+        return CUSTOM_KEYS[this.quizLanguageMode] || CUSTOM_KEYS['fr-nl'];
+    }
+
+    saveCustomWords() {
+        localStorage.setItem(this.getCustomKey(), JSON.stringify(this.customVocabulary));
+    }
+
+    loadCustomWords(langmode) {
+        return JSON.parse(localStorage.getItem(CUSTOM_KEYS[langmode] || CUSTOM_KEYS['fr-nl'])) || [];
+    }
+
+    setLanguageMode(mode) {
+        this.quizLanguageMode = mode;
+        this.customVocabulary = this.loadCustomWords(mode);
+        this.updateUI();
+        updateRecentAdditions();
+        updateHardWordsList();
     }
 
     generateQuestion() {
@@ -156,11 +172,7 @@ class VocabularyQuiz {
         if (this.isPracticeMode) {
             pairs = this.hardWords;
         } else if (this.customPracticeMode) {
-            pairs = this.customVocabulary.map(entry => {
-                if (entry.length === 3) return entry;
-                if (entry.length === 2) return [entry[0], entry[1], ""];
-                return ["", "", ""];
-            });
+            pairs = this.customVocabulary;
         } else {
             pairs = this.getAllWords();
         }
@@ -204,7 +216,6 @@ class VocabularyQuiz {
                 direction = 'french_to_english';
             }
         }
-
         this.currentQuestion = question;
         this.currentAnswer = answer;
         this.currentDirection = direction;
@@ -225,7 +236,7 @@ class VocabularyQuiz {
 
     checkAnswer(userAnswer) {
         const normalizedUser = this.normalizeAnswer(userAnswer);
-        const possibleAnswers = this.currentAnswer.split(',').map(ans =>
+        const possibleAnswers = (this.currentAnswer||"").split(',').map(ans =>
             ans.split('/').map(a => this.normalizeAnswer(a.trim()))
         ).flat();
         return possibleAnswers.some(ans => ans === normalizedUser);
@@ -277,12 +288,18 @@ class VocabularyQuiz {
         localStorage.setItem('hardWords', JSON.stringify(this.hardWords));
     }
 
-    addCustomWord(french, dutch) {
+    addCustomWord(french, dutch, english) {
         // Only add if not empty and not duplicate
-        if (!french.trim() || !dutch.trim()) return;
-        if (this.customVocabulary.some(([f, d]) => f === french.trim() && d === dutch.trim())) return;
-        this.customVocabulary.push([french.trim(), dutch.trim(), ""]);
-        this.saveCustomVocabulary();
+        if (!french.trim() && !dutch.trim() && !english.trim()) return;
+        if (this.customVocabulary.some(
+            ([f, d, e]) => f === french.trim() && d === dutch.trim() && (e||"") === (english||"").trim()
+        )) return;
+        this.customVocabulary.push([
+            french.trim(), 
+            dutch.trim(), 
+            (english||"").trim()
+        ]);
+        this.saveCustomWords();
     }
 
     updateUI() {
@@ -304,7 +321,13 @@ let game = new VocabularyQuiz();
 
 function setQuizLanguage() {
     const sel = document.getElementById("lang-choice");
-    game.quizLanguageMode = sel.value;
+    game.setLanguageMode(sel.value);
+    // update input placeholders
+    document.getElementById('custom-french-word').placeholder = sel.value.includes("fr") ? "French word" : "French (optional)";
+    document.getElementById('custom-dutch-word').placeholder = sel.value.includes("nl") ? "Dutch translation" : "Dutch (optional)";
+    document.getElementById('custom-english-word').placeholder = sel.value.includes("en") ? "English translation" : "English (optional)";
+    updateRecentAdditions();
+    updateHardWordsList();
 }
 
 function showScreen(screenId) {
@@ -312,7 +335,6 @@ function showScreen(screenId) {
         screen.classList.remove('active');
     });
     document.getElementById(screenId).classList.add('active');
-    // Update recent lists and hard words list for each section as needed
     if (screenId === 'add-word-menu') updateRecentAdditions();
     if (screenId === 'practice-hard-menu') {
         updateRecentAdditions('recent-list-hard');
@@ -489,15 +511,17 @@ function addToHardWords(shouldAdd) {
 }
 
 function addNewWord() {
-    const frenchWord = document.getElementById('french-word').value.trim();
-    const dutchWord = document.getElementById('dutch-word').value.trim();
-    if (!frenchWord || !dutchWord) {
-        alert('Please fill in both French and Dutch translations!');
+    const frenchWord = document.getElementById('custom-french-word').value.trim();
+    const dutchWord = document.getElementById('custom-dutch-word').value.trim();
+    const englishWord = document.getElementById('custom-english-word').value.trim();
+    if (!frenchWord && !dutchWord && !englishWord) {
+        alert('Please fill in at least one translation!');
         return;
     }
-    game.addCustomWord(frenchWord, dutchWord);
-    document.getElementById('french-word').value = '';
-    document.getElementById('dutch-word').value = '';
+    game.addCustomWord(frenchWord, dutchWord, englishWord);
+    document.getElementById('custom-french-word').value = '';
+    document.getElementById('custom-dutch-word').value = '';
+    document.getElementById('custom-english-word').value = '';
     game.updateUI();
     updateRecentAdditions();
     alert('Word added successfully!');
@@ -514,7 +538,11 @@ function updateRecentAdditions(elementId = 'recent-list') {
     const recent = customVocab.slice(-10).reverse();
     let html = '';
     recent.forEach(([french, dutch, english]) => {
-        html += `<div class="recent-item"><strong>${french}</strong> → ${dutch}</div>`;
+        let parts = [];
+        if (french) parts.push(`<strong>${french}</strong>`);
+        if (dutch) parts.push(dutch);
+        if (english) parts.push(english);
+        html += `<div class="recent-item">${parts.join(' → ')}</div>`;
     });
     container.innerHTML = html;
 }
@@ -587,11 +615,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     // Enter support for add words form
-    document.getElementById('dutch-word').addEventListener('keydown', function (e) {
+    document.getElementById('custom-dutch-word').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') addNewWord();
     });
-    document.getElementById('french-word').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') document.getElementById('dutch-word').focus();
+    document.getElementById('custom-french-word').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('custom-dutch-word').focus();
+    });
+    document.getElementById('custom-english-word').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') addNewWord();
     });
     // Modal: close on ESC
     document.addEventListener('keydown', function(e) {
