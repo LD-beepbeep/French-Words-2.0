@@ -3,58 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <title>French-Dutch Vocabulary Trainer</title>
-    <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #3a8bfd;
+            --accent: #38cfa7;
+            --bg-gradient: linear-gradient(120deg, #151c28 0%, #26354d 100%);
+            --glass: rgba(255,255,255,0.07);
+            --card: rgba(255,255,255,0.14);
+            --border: rgba(255,255,255,0.18);
+            --text-light: #e8f1fd;
+            --text-dark: #222a35;
+        }
         body {
-            font-family: 'Inter', Arial, sans-serif;
-            background: linear-gradient(120deg, #4f8cff 0%, #38cfa7 100%);
             min-height: 100vh;
-            margin: 0;
+            background: var(--bg-gradient);
+            font-family: 'Inter', Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--text-light);
+            margin: 0;
         }
         .container {
-            background: white;
+            background: var(--glass);
             border-radius: 1.5rem;
-            box-shadow: 0 6px 32px rgba(60,80,120,0.15), 0 1.5px 5px rgba(60,80,120,0.08);
-            padding: 2.5rem 2rem 2rem 2rem;
-            max-width: 410px;
+            box-shadow: 0 10px 40px rgba(30,40,80,0.15), 0 1.5px 5px rgba(60,80,120,0.08);
+            padding: 2.7rem 2.2rem 2rem 2.2rem;
+            max-width: 450px;
             width: 100%;
+            backdrop-filter: blur(9px);
+            border: 1.5px solid var(--border);
         }
         h1, h2, h3 {
-            font-weight: 600;
-            color: #26415b;
+            font-weight: 700;
+            color: var(--primary);
             margin-top: 0;
+            margin-bottom: 0.7em;
+            letter-spacing: -1px;
         }
-        h1 { font-size: 2rem; margin-bottom: 1.6rem;}
-        h2 { font-size: 1.18rem; margin-bottom: 0.8rem;}
-        h3 { font-size: 1.1rem; margin-bottom: 0.65rem;}
-        label { font-weight: 500; color: #4f8cff; }
+        h1 { font-size: 2.1rem; margin-bottom: 1.3rem;}
+        h2 { font-size: 1.2rem; }
+        h3 { font-size: 1.07rem; color: var(--accent);}
         .btn {
             display: inline-block;
-            background: #4f8cff;
-            color: white;
+            background: var(--primary);
+            color: #fff;
             font-family: inherit;
             border: none;
-            border-radius: 0.8rem;
-            padding: 0.7em 1.4em;
-            margin: 0.25em 0.25em 0.25em 0;
+            border-radius: 1.2em;
+            padding: 0.7em 1.5em;
+            margin: 0.21em 0.18em 0.21em 0;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(60,80,120,0.08);
-            transition: background 0.15s;
+            box-shadow: 0 2px 14px rgba(60,80,120,0.11);
+            transition: background 0.14s, box-shadow 0.14s;
         }
-        .btn:active, .btn:focus { background: #3274e0; outline: none;}
-        .btn-accent { background: #38cfa7; }
-        .btn-accent:active, .btn-accent:focus { background: #22b98d;}
+        .btn:active, .btn:focus { background: #2568c8; outline: none;}
+        .btn-accent { background: var(--accent); }
+        .btn-accent:active, .btn-accent:focus { background: #23b388;}
         .btn-secondary {
-            background: #f0f3fa; color: #26415b;
-            border: 1px solid #dbe8f4;
+            background: #232f43;
+            color: var(--text-light);
+            border: 1px solid #3a4359;
         }
         .btn-secondary:active, .btn-secondary:focus {
-            background: #e0e7f4;
+            background: #1b2535;
         }
         .screen { display: none; }
         .screen.active { display: block; }
@@ -65,82 +82,109 @@
         }
         input[type="text"] {
             padding: 0.7em 1em;
-            border: 1px solid #d0d5dd;
-            border-radius: 0.7rem;
+            border: 1.5px solid #31446d;
+            border-radius: 1.1em;
             font-size: 1rem;
             width: 100%;
             margin-bottom: 0.6em;
             box-sizing: border-box;
-            transition: border 0.15s;
+            background: var(--card);
+            color: var(--text-light);
+            transition: border 0.15s, background 0.15s, color 0.15s;
         }
         input[type="text"]:focus {
-            border-color: #4f8cff;
+            border-color: var(--primary);
             outline: none;
+            background: #222f40;
+            color: #fff;
         }
         #recent-list, #hard-words-list {
             margin-bottom: 1.1em;
         }
         .recent-item, .hard-word-item {
-            background: #f8fafd;
-            border-radius: 0.6rem;
-            padding: 0.5em 0.8em;
-            margin-bottom: 0.35em;
+            background: var(--card);
+            border-radius: 0.7em;
+            padding: 0.5em 0.9em;
+            margin-bottom: 0.3em;
             font-size: 0.99em;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            color: var(--text-light);
+            border: 1px solid var(--border);
         }
         .hard-word-content { flex: 1; }
         .remove-hard-btn {
-            background: #fff0f0;
-            color: #b34646;
-            border: 1px solid #f6c8c8;
-            border-radius: 0.7rem;
-            padding: 0.3em 0.9em;
-            font-size: 0.97em;
+            background: #ffdede20;
+            color: #ff6e6e;
+            border: 1px solid #ffb1b1;
+            border-radius: 0.8em;
+            padding: 0.32em 0.9em;
+            font-size: 0.99em;
             cursor: pointer;
             margin-left: 0.7em;
             transition: background 0.09s;
         }
         .remove-hard-btn:active, .remove-hard-btn:focus {
-            background: #ffdede;
+            background: #ffdede60;
         }
         #feedback {
             min-height: 1.6em;
             text-align: center;
-            font-size: 1.08em;
+            font-size: 1.09em;
         }
-        .feedback.correct { color: #38cfa7; }
-        .feedback.incorrect { color: #b34646; }
+        .feedback.correct { color: var(--accent); }
+        .feedback.incorrect { color: #ff6e6e; }
         /* Modal */
         .modal {
             display: none;
             position: fixed; z-index: 1000;
             left: 0; top: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.3); justify-content: center; align-items: center;
+            background: rgba(21,28,40,0.85); justify-content: center; align-items: center;
         }
         .modal.active {
             display: flex;
         }
         .modal-content {
-            background: #fff; padding: 2em 1.3em; border-radius: 1.2rem; box-shadow: 0 2px 14px #2222;
-            max-width: 90vw; text-align: center;
+            background: #212e42; padding: 2em 1.3em; border-radius: 1.3em; box-shadow: 0 2px 14px #2223;
+            max-width: 90vw; text-align: center; color: var(--text-light);
+        }
+        .modal-content h3 { color: var(--primary);}
+        /* Stats */
+        .stats-table {
+            width: 100%;
+            border-spacing: 0.5em 0.2em;
+            margin: 1.1em 0 0.6em;
+            font-size: 1.01em;
+        }
+        .stats-table th, .stats-table td {
+            padding: 0.38em 0.6em;
+            text-align: left;
+            color: var(--text-light);
+        }
+        .stats-table th {
+            font-weight: 600; color: var(--accent); border-bottom: 1.5px solid var(--accent);
+        }
+        .stats-table td {
+            font-weight: 500;
         }
         /* Responsive */
         @media (max-width: 600px) {
-            .container { max-width: 99vw; border-radius: 0; padding: 1.1em 0.2em;}
-            h1 { font-size: 1.3rem;}
+            .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
+            h1 { font-size: 1.26rem;}
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- MAIN MENU -->
         <div id="main-menu" class="screen active">
             <h1>French-Dutch Vocabulary Trainer</h1>
             <button class="btn" onclick="startQuiz()">Start Quiz</button>
             <button class="btn" onclick="practiceHardWords()">Practice Hard Words</button>
             <button id="practice-custom-btn" class="btn btn-accent" onclick="practiceCustomWords()">Practice Custom Words</button>
-            <div style="margin: 1.2em 0;">
+            <button class="btn btn-secondary" onclick="showStatsScreen()" style="float:right;">Stats</button>
+            <div style="margin: 1.3em 0 1.5em 0;">
                 <p>Words in vocabulary: <span id="vocab-count"></span></p>
                 <p>Hard words: <span id="hard-count"></span></p>
             </div>
@@ -162,11 +206,12 @@
             </div>
         </div>
 
+        <!-- QUIZ -->
         <div id="quiz-screen" class="screen">
             <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right; margin-top:-0.7em;">Back</button>
             <h2 style="margin-bottom:0.6em;">Quiz</h2>
             <div style="margin-bottom:1.5em;">
-                <span id="question-direction" style="font-weight:600; color:#4f8cff;"></span>
+                <span id="question-direction" style="font-weight:600; color:var(--primary);"></span>
                 <span id="question-text" style="font-weight:500;"></span>
             </div>
             <div class="inputs-row" style="margin-bottom:0;">
@@ -174,12 +219,45 @@
                 <button class="btn" onclick="submitAnswer()">Submit</button>
             </div>
             <div id="feedback" class="feedback"></div>
-            <div style="margin-top:1.5em;">
+            <div style="margin-top:1.3em;">
                 <p>Score: <span id="current-score"></span> (<span id="score-percentage"></span>)</p>
                 <p>Question #: <span id="question-number"></span></p>
             </div>
         </div>
 
+        <!-- STATS -->
+        <div id="stats-screen" class="screen">
+            <button class="btn btn-secondary" onclick="showMainMenu()" style="float:right;">Back</button>
+            <h2>Stats</h2>
+            <table class="stats-table">
+                <tr>
+                    <th>Type</th>
+                    <th>Correct</th>
+                    <th>Total</th>
+                    <th>Accuracy</th>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td id="correct-answers"></td>
+                    <td id="total-questions"></td>
+                    <td id="accuracy"></td>
+                </tr>
+                <tr>
+                    <td>🇫🇷→🇳🇱</td>
+                    <td id="fr-to-nl-correct"></td>
+                    <td id="fr-to-nl-total"></td>
+                    <td id="fr-to-nl-accuracy"></td>
+                </tr>
+                <tr>
+                    <td>🇳🇱→🇫🇷</td>
+                    <td id="nl-to-fr-correct"></td>
+                    <td id="nl-to-fr-total"></td>
+                    <td id="nl-to-fr-accuracy"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- MODAL -->
         <div id="hard-words-modal" class="modal">
             <div class="modal-content">
                 <h3>Add to Hard Words?</h3>
