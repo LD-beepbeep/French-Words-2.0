@@ -1,13 +1,11 @@
 // --- Vocabulary Quiz Class ---
 class VocabularyQuiz {
     constructor() {
-        // Main word lists
         this.vocabularyPairs = [];
         this.hardWords = JSON.parse(localStorage.getItem('hardWords')) || [];
         this.customPracticeMode = false;
         this.isPracticeMode = false;
 
-        // Stats
         this.sessionStats = {
             correct: 0, incorrect: 0, total: 0,
             frenchToDutch: { correct: 0, total: 0 },
@@ -23,7 +21,6 @@ class VocabularyQuiz {
         this.updateUI();
     }
 
-    // Load default and custom vocabularies
     loadDefaultVocabulary() {
         const defaultVocab = [
             ["la banlieue", "de buitenwijken"],
@@ -269,6 +266,32 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
 }
 
+// --- Stats Screen ---
+function showStatsScreen() {
+    updateStatsDisplay();
+    showScreen('stats-screen');
+}
+
+function updateStatsDisplay() {
+    const stats = game.sessionStats;
+    document.getElementById('total-questions').textContent = stats.total;
+    document.getElementById('correct-answers').textContent = stats.correct;
+    const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    document.getElementById('accuracy').textContent = `${accuracy}%`;
+
+    const frToNl = stats.frenchToDutch;
+    const frToNlAcc = frToNl.total > 0 ? Math.round((frToNl.correct / frToNl.total) * 100) : 0;
+    document.getElementById('fr-to-nl-correct').textContent = frToNl.correct;
+    document.getElementById('fr-to-nl-total').textContent = frToNl.total;
+    document.getElementById('fr-to-nl-accuracy').textContent = `${frToNlAcc}%`;
+
+    const nlToFr = stats.dutchToFrench;
+    const nlToFrAcc = nlToFr.total > 0 ? Math.round((nlToFr.correct / nlToFr.total) * 100) : 0;
+    document.getElementById('nl-to-fr-correct').textContent = nlToFr.correct;
+    document.getElementById('nl-to-fr-total').textContent = nlToFr.total;
+    document.getElementById('nl-to-fr-accuracy').textContent = `${nlToFrAcc}%`;
+}
+
 function showMainMenu() {
     game.customPracticeMode = false;
     game.isPracticeMode = false;
@@ -359,10 +382,10 @@ function submitAnswer() {
                         game.updateUI();
                     }
                 }
-                setTimeout(nextQuestion, 1000);
-            }, 1000);
+                setTimeout(nextQuestion, 900);
+            }, 900);
         } else {
-            setTimeout(nextQuestion, 1000);
+            setTimeout(nextQuestion, 900);
         }
     } else {
         feedback.textContent = `❌ Incorrect. The correct answer is: ${game.currentAnswer}`;
@@ -371,9 +394,9 @@ function submitAnswer() {
             if (!game.isPracticeMode) {
                 showHardWordsModal();
             } else {
-                setTimeout(nextQuestion, 1500);
+                setTimeout(nextQuestion, 1400);
             }
-        }, 1000);
+        }, 900);
     }
     game.updateUI();
 }
@@ -411,7 +434,7 @@ function updateRecentAdditions() {
     const container = document.getElementById('recent-list');
     const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
     if (customVocab.length === 0) {
-        container.innerHTML = '<p>No custom words added yet.</p>';
+        container.innerHTML = '<p style="color:#8fa9cc;">No custom words added yet.</p>';
         return;
     }
     const recent = customVocab.slice(-10).reverse();
@@ -427,7 +450,7 @@ function updateHardWordsList() {
     const practiceBtn = document.getElementById('practice-hard-btn');
     const clearBtn = document.getElementById('clear-hard-btn');
     if (game.hardWords.length === 0) {
-        container.innerHTML = '<p>No hard words yet!</p>';
+        container.innerHTML = '<p style="color:#8fa9cc;">No hard words yet!</p>';
         practiceBtn.style.display = 'none';
         clearBtn.style.display = 'none';
         return;
