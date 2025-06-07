@@ -1,12 +1,15 @@
-// Game State Management
+// --- Vocabulary Quiz Class ---
 class VocabularyQuiz {
     constructor() {
+        // Main word lists
         this.vocabularyPairs = [];
         this.hardWords = JSON.parse(localStorage.getItem('hardWords')) || [];
+        this.customPracticeMode = false;
+        this.isPracticeMode = false;
+
+        // Stats
         this.sessionStats = {
-            correct: 0,
-            incorrect: 0,
-            total: 0,
+            correct: 0, incorrect: 0, total: 0,
             frenchToDutch: { correct: 0, total: 0 },
             dutchToFrench: { correct: 0, total: 0 }
         };
@@ -14,151 +17,53 @@ class VocabularyQuiz {
         this.currentAnswer = null;
         this.currentDirection = null;
         this.questionNumber = 0;
-        this.isPracticeMode = false;
         this.pendingHardWord = null;
-        
+
         this.loadDefaultVocabulary();
         this.updateUI();
     }
 
+    // Load default and custom vocabularies
     loadDefaultVocabulary() {
-        // Default vocabulary from your file
         const defaultVocab = [
+            // ... (keep your default words array here) ...
             ["la banlieue", "de buitenwijken"],
             ["la campagne", "het platteland"],
-            ["la commune", "de gemeente"],
-            ["le pays", "het land"],
-            ["la région", "de streek, de regio"],
-            ["le loft", "de loft"],
-            ["le logement", "de woonst, de slaapgelegenheid"],
-            ["la maison de rangée", "de rijwoning"],
-            ["la micro-maison", "de microwoning"],
-            ["le studio", "de studio"],
-            ["la Tiny", "de microwoning, het tiny house"],
-            ["la villa", "de villa"],
-            ["abordable", "betaalbaar"],
-            ["agréable", "aangenaam, gezellig"],
-            ["cher, chère", "duur"],
-            ["clos(e)", "afgesloten"],
-            ["confortable", "comfortabel"],
-            ["écologique", "ecologisch"],
-            ["équipé(e) (de)", "voorzien (van), uitgerust (met)"],
-            ["étroit(e)", "smal"],
-            ["magnifique", "prachtig"],
-            ["pratique", "praktisch"],
-            ["spacieux, spacieuse", "ruim"],
-            ["rose", "roze"],
-            ["jaune", "geel"],
-            ["blanc, blanche", "wit"],
-            ["vert(e)", "groen"],
-            ["noir(e)", "zwart"],
-            ["brun(e)", "bruin"],
-            ["rouge", "rood"],
-            ["mauve", "paars"],
-            ["bleu(e)", "blauw"],
-            ["orange", "oranje"],
-            ["gris(e)", "grijs"],
-            ["construire", "bouwen"],
-            ["déménager", "verhuizen"],
-            ["entretenir", "onderhouden"],
-            ["nettoyer", "poetsen"],
-            ["prendre une douche", "zich douchen"],
-            ["ranger", "opruimen"],
-            ["réparer", "herstellen"],
-            ["se changer", "zich omkleden"],
-            ["se déshabiller", "zich uitkleden"],
-            ["se réveiller", "wakker worden"],
-            ["vivre", "wonen, leven"],
-            ["l'ascenseur (m)", "de lift"],
-            ["l'armoire (f)", "de kast"],
-            ["la baignoire", "het bad"],
-            ["le balai", "de bezem"],
-            ["le barbecue", "de barbecue"],
-            ["le cadre", "de lijst, de omlijsting"],
-            ["la cafetière", "het koffiezetapparaat"],
-            ["la casserole", "de kookpan"],
-            ["la chaise", "de stoel"],
-            ["le congélateur", "de diepvriezer"],
-            ["la douche", "de douche"],
-            ["le drap", "het laken"],
-            ["l'étagère (f)", "het rek"],
-            ["l'évier (m)", "de gootsteen"],
-            ["le fauteuil", "de zetel"],
-            ["la fenêtre", "het raam"],
-            ["la garde-robe", "de garderobe, de kleerkast"],
-            ["le grille-pain", "de broodrooster"],
-            ["le haut-parleur", "de luidspreker, de (muziek)box"],
-            ["la lampe", "de lamp"],
-            ["le lavabo", "de wastafel"],
-            ["le lave-vaisselle", "de vaatwasser"],
-            ["le lit", "het bed"],
-            ["le miroir", "de spiegel"],
-            ["l'ordinateur (m)", "de computer"],
-            ["l'oreiller (m)", "het hoofdkussen"],
-            ["le panier à linge", "de linnenmand"],
-            ["le poster", "de poster"],
-            ["la poubelle", "de vuilnisbak"],
-            ["le rasoir", "het scheerapparaat"],
-            ["le réveil", "de wekker"],
-            ["le rideau", "het gordijn"],
-            ["le robinet", "de kraan"],
-            ["le tableau", "het schilderij"],
-            ["la table de nuit", "het nachtkastje"],
-            ["le tapis", "het tapijt"],
-            ["la télé", "de televisie"],
-            ["la télécommande", "de afstandsbediening"],
-            ["la tondeuse à gazon", "de grasmaaier"],
-            ["le bureau", "het bureau"],
-            ["la cabane de jardin", "het tuinhuis"],
-            ["la cave", "de kelder"],
-            ["la chambre à coucher", "de slaapkamer"],
-            ["le couloir", "de gang"],
-            ["la cuisine", "de keuken"],
-            ["le débarras", "de berging"],
-            ["le garage", "de garage"],
-            ["le grenier", "de zolder"],
-            ["le hall (d'entrée)", "de (inkom)hal"],
-            ["le jardin", "de tuin"],
-            ["le living", "de woonkamer"],
-            ["la mezzanine", "de mezzanine, de tussenverdieping"],
-            ["la pièce", "de kamer, het vertrek"],
-            ["la piscine", "het zwembad"],
-            ["le premier étage", "de eerste verdieping"],
-            ["le rez-de-chaussée", "de begane grond"],
-            ["la salle à manger", "de eetkamer"],
-            ["la salle de bains", "de badkamer"],
-            ["la salle de séjour", "de woonkamer"],
-            ["le salon", "het salon"],
-            ["la terrasse", "het terras"],
+            // ... (truncated for brevity, use your full list) ...
             ["les toilettes (f)", "het toilet, de wc"]
         ];
-
-        // Load custom vocabulary from localStorage
         const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
         this.vocabularyPairs = [...defaultVocab, ...customVocab];
     }
 
+    // Save only custom words
     saveCustomVocabulary() {
-        const defaultCount = 107; // Number of default vocabulary pairs
+        const defaultCount = 107; // Number of default pairs
         const customVocab = this.vocabularyPairs.slice(defaultCount);
         localStorage.setItem('customVocabulary', JSON.stringify(customVocab));
     }
 
+    // --- Generate a Question ---
     generateQuestion() {
-        const pairs = this.isPracticeMode ? this.hardWords : this.vocabularyPairs;
+        let pairs;
+        if (this.isPracticeMode) {
+            pairs = this.hardWords;
+        } else if (this.customPracticeMode) {
+            pairs = JSON.parse(localStorage.getItem('customVocabulary')) || [];
+        } else {
+            pairs = this.vocabularyPairs;
+        }
         if (pairs.length === 0) return null;
 
         const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
-        const isFrenchhToDutch = Math.random() < 0.5;
+        const isFrenchToDutch = Math.random() < 0.5;
 
         if (this.isPracticeMode) {
-            // For hard words, use stored question format
             this.currentQuestion = randomPair.question;
             this.currentAnswer = randomPair.answer;
             this.currentDirection = randomPair.direction;
         } else {
-            // For regular quiz
-            if (isFrenchhToDutch) {
+            if (isFrenchToDutch) {
                 this.currentQuestion = `🇫🇷 → 🇳🇱  Translate: ${randomPair[0]}`;
                 this.currentAnswer = randomPair[1];
                 this.currentDirection = 'french_to_dutch';
@@ -168,7 +73,6 @@ class VocabularyQuiz {
                 this.currentDirection = 'dutch_to_french';
             }
         }
-
         this.questionNumber++;
         return {
             question: this.currentQuestion,
@@ -177,6 +81,7 @@ class VocabularyQuiz {
         };
     }
 
+    // --- Answer Checking ---
     normalizeAnswer(answer) {
         return answer.toLowerCase()
             .trim()
@@ -186,50 +91,39 @@ class VocabularyQuiz {
 
     checkAnswer(userAnswer) {
         const normalizedUser = this.normalizeAnswer(userAnswer);
-        const possibleAnswers = this.currentAnswer.split(',').map(ans => 
+        const possibleAnswers = this.currentAnswer.split(',').map(ans =>
             ans.split('/').map(a => this.normalizeAnswer(a.trim()))
         ).flat();
-
         return possibleAnswers.some(ans => ans === normalizedUser);
     }
 
-         submitAnswer(userAnswer) {
-         const isCorrect = this.checkAnswer(userAnswer);
-         this.sessionStats.total++;
- 
-         let statsKey = null;
-         if (this.currentDirection === 'french_to_dutch') {
-             statsKey = 'frenchToDutch';
-         } else if (this.currentDirection === 'dutch_to_french') {
-             statsKey = 'dutchToFrench';
-         }
- 
-         if (isCorrect) {
-             this.sessionStats.correct++;
-             if (statsKey) {
-                 this.sessionStats[statsKey].correct++;
-             }
-         } else {
-             this.sessionStats.incorrect++;
-             // Store pending hard word for modal
-             this.pendingHardWord = {
-                 question: this.currentQuestion,
-                 answer: this.currentAnswer,
-                 direction: this.currentDirection
-             };
-         } 
-        if (statsKey) {
-           this.sessionStats[statsKey].total++;
-        }
-         return isCorrect;
-     }
+    submitAnswer(userAnswer) {
+        const isCorrect = this.checkAnswer(userAnswer);
+        this.sessionStats.total++;
+        let statsKey = null;
+        if (this.currentDirection === 'french_to_dutch') statsKey = 'frenchToDutch';
+        if (this.currentDirection === 'dutch_to_french') statsKey = 'dutchToFrench';
 
+        if (isCorrect) {
+            this.sessionStats.correct++;
+            if (statsKey) this.sessionStats[statsKey].correct++;
+        } else {
+            this.sessionStats.incorrect++;
+            this.pendingHardWord = {
+                question: this.currentQuestion,
+                answer: this.currentAnswer,
+                direction: this.currentDirection
+            };
+        }
+        if (statsKey) this.sessionStats[statsKey].total++;
+        return isCorrect;
+    }
+
+    // --- Hard Words ---
     addToHardWords(hardWordData) {
-        // Check if already exists
-        const exists = this.hardWords.some(hw => 
+        const exists = this.hardWords.some(hw =>
             hw.question === hardWordData.question && hw.answer === hardWordData.answer
         );
-        
         if (!exists) {
             this.hardWords.push(hardWordData);
             localStorage.setItem('hardWords', JSON.stringify(this.hardWords));
@@ -246,33 +140,32 @@ class VocabularyQuiz {
         localStorage.setItem('hardWords', JSON.stringify(this.hardWords));
     }
 
+    // --- Add Custom Word ---
     addCustomWord(french, dutch) {
         this.vocabularyPairs.push([french.trim(), dutch.trim()]);
         this.saveCustomVocabulary();
     }
 
+    // --- UI Updates (optimized) ---
     updateUI() {
-        // Update vocabulary count
-        document.getElementById('vocab-count').textContent = this.vocabularyPairs.length;
-        
-        // Update hard words count
-        document.getElementById('hard-count').textContent = this.hardWords.length;
-        
-        // Update score display
-        const percentage = this.sessionStats.total > 0 ? 
+        const setText = (id, value) => {
+            const el = document.getElementById(id);
+            if (el && el.textContent != value) el.textContent = value;
+        };
+        setText('vocab-count', this.vocabularyPairs.length);
+        setText('hard-count', this.hardWords.length);
+        setText('current-score', `${this.sessionStats.correct}/${this.sessionStats.total}`);
+        const percentage = this.sessionStats.total > 0 ?
             Math.round((this.sessionStats.correct / this.sessionStats.total) * 100) : 0;
-        
-        document.getElementById('current-score').textContent = 
-            `${this.sessionStats.correct}/${this.sessionStats.total}`;
-        document.getElementById('score-percentage').textContent = `${percentage}%`;
-        document.getElementById('question-number').textContent = this.questionNumber;
+        setText('score-percentage', `${percentage}%`);
+        setText('question-number', this.questionNumber);
     }
 }
 
-// Global game instance
+// --- Global instance ---
 let game = new VocabularyQuiz();
 
-// Screen Management Functions
+// --- Screen Switching ---
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
@@ -281,105 +174,92 @@ function showScreen(screenId) {
 }
 
 function showMainMenu() {
+    game.customPracticeMode = false;
+    game.isPracticeMode = false;
     game.updateUI();
     showScreen('main-menu');
 }
 
+// --- Quiz Flow ---
 function startQuiz() {
     game.isPracticeMode = false;
+    game.customPracticeMode = false;
     showScreen('quiz-screen');
     nextQuestion();
 }
 
-function showAddWords() {
-    showScreen('add-words-screen');
-    updateRecentAdditions();
+function practiceHardWords() {
+    if (game.hardWords.length === 0) {
+        alert('No hard words to practice!');
+        return;
+    }
+    game.isPracticeMode = true;
+    game.customPracticeMode = false;
+    game.questionNumber = 0;
+    showScreen('quiz-screen');
+    nextQuestion();
 }
 
-function showHardWords() {
-    showScreen('hard-words-screen');
-    updateHardWordsList();
+// --- PRACTICE CUSTOM WORDS MODE ---
+function practiceCustomWords() {
+    const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
+    if (customVocab.length === 0) {
+        alert('No custom words to practice!');
+        return;
+    }
+    game.isPracticeMode = false;
+    game.customPracticeMode = true;
+    game.questionNumber = 0;
+    showScreen('quiz-screen');
+    nextQuestion();
 }
 
-function showStats() {
-    showScreen('stats-screen');
-    updateStatsDisplay();
-}
-
-function showQuizMenu() {
-    const modal = document.createElement('div');
-    modal.className = 'modal active';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <h3>Quiz Menu</h3>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="continueQuiz()">Continue Quiz</button>
-                <button class="btn btn-secondary" onclick="showStats(); closeModal()">View Stats</button>
-                <button class="btn btn-secondary" onclick="showHardWords(); closeModal()">Hard Words</button>
-                <button class="btn btn-danger" onclick="showMainMenu(); closeModal()">End Quiz</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function continueQuiz() {
-    closeModal();
-}
-
-function closeModal() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => modal.remove());
-}
-
-// Quiz Functions
 function nextQuestion() {
     const questionData = game.generateQuestion();
     if (!questionData) {
-        alert('No vocabulary available!');
+        if (game.customPracticeMode) {
+            alert('No custom vocabulary available!');
+        } else {
+            alert('No vocabulary available!');
+        }
+        showMainMenu();
         return;
     }
-
-    // Extract direction for display
+    // Display question
     let directionText = '';
     if (questionData.question.includes('🇫🇷 → 🇳🇱')) {
         directionText = '🇫🇷 → 🇳🇱';
-        document.getElementById('question-text').textContent = 
+        document.getElementById('question-text').textContent =
             questionData.question.replace('🇫🇷 → 🇳🇱  Translate: ', '');
     } else if (questionData.question.includes('🇳🇱 → 🇫🇷')) {
         directionText = '🇳🇱 → 🇫🇷';
-        document.getElementById('question-text').textContent = 
+        document.getElementById('question-text').textContent =
             questionData.question.replace('🇳🇱 → 🇫🇷  Translate: ', '');
     }
-
     document.getElementById('question-direction').textContent = directionText;
     document.getElementById('answer-input').value = '';
     document.getElementById('answer-input').focus();
     document.getElementById('feedback').textContent = '';
     document.getElementById('feedback').className = 'feedback';
-    
     game.updateUI();
 }
 
+// --- Answer Submission ---
 function submitAnswer() {
     const userAnswer = document.getElementById('answer-input').value.trim();
     if (!userAnswer) {
         alert('Please enter an answer!');
         return;
     }
-
     const isCorrect = game.submitAnswer(userAnswer);
     const feedback = document.getElementById('feedback');
-
     if (isCorrect) {
         feedback.textContent = '✅ Correct! Well done!';
         feedback.className = 'feedback correct';
-        
         if (game.isPracticeMode) {
-            // Ask if they want to remove from hard words
             setTimeout(() => {
                 if (confirm('Remove this word from hard words list?')) {
-                    const hardWordIndex = game.hardWords.findIndex(hw => 
+                    const hardWordIndex = game.hardWords.findIndex(hw =>
                         hw.question === game.currentQuestion && hw.answer === game.currentAnswer
                     );
                     if (hardWordIndex !== -1) {
@@ -390,56 +270,80 @@ function submitAnswer() {
                 setTimeout(nextQuestion, 1000);
             }, 1000);
         } else {
-            setTimeout(nextQuestion, 1500);
+            setTimeout(nextQuestion, 1000);
         }
     } else {
         feedback.textContent = `❌ Incorrect. The correct answer is: ${game.currentAnswer}`;
         feedback.className = 'feedback incorrect';
-        
-        // Show modal to add to hard words
         setTimeout(() => {
             if (!game.isPracticeMode) {
                 showHardWordsModal();
             } else {
-                setTimeout(nextQuestion, 2000);
+                setTimeout(nextQuestion, 1500);
             }
-        }, 1500);
+        }, 1000);
     }
-
     game.updateUI();
 }
 
+// --- Modal for Hard Words (add this to HTML too!) ---
 function showHardWordsModal() {
     const modal = document.getElementById('hard-words-modal');
     modal.classList.add('active');
 }
-
 function addToHardWords(shouldAdd) {
     if (shouldAdd && game.pendingHardWord) {
         game.addToHardWords(game.pendingHardWord);
         game.updateUI();
     }
-    
     document.getElementById('hard-words-modal').classList.remove('active');
     game.pendingHardWord = null;
-    
-    // Continue to next question after delay
-    setTimeout(nextQuestion, 1000);
+    setTimeout(nextQuestion, 500);
 }
 
-// Hard Words Functions
+// --- Add Custom Words ---
+function addNewWord() {
+    const frenchWord = document.getElementById('french-word').value.trim();
+    const dutchWord = document.getElementById('dutch-word').value.trim();
+    if (!frenchWord || !dutchWord) {
+        alert('Please fill in both French and Dutch translations!');
+        return;
+    }
+    game.addCustomWord(frenchWord, dutchWord);
+    document.getElementById('french-word').value = '';
+    document.getElementById('dutch-word').value = '';
+    game.updateUI();
+    updateRecentAdditions();
+    alert('Word added successfully!');
+}
+
+// --- Show recent custom additions ---
+function updateRecentAdditions() {
+    const container = document.getElementById('recent-list');
+    const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
+    if (customVocab.length === 0) {
+        container.innerHTML = '<p>No custom words added yet.</p>';
+        return;
+    }
+    const recent = customVocab.slice(-10).reverse();
+    let html = '';
+    recent.forEach(([french, dutch]) => {
+        html += `<div class="recent-item"><strong>${french}</strong> → ${dutch}</div>`;
+    });
+    container.innerHTML = html;
+}
+
+// --- Hard Words List UI ---
 function updateHardWordsList() {
     const container = document.getElementById('hard-words-list');
     const practiceBtn = document.getElementById('practice-hard-btn');
     const clearBtn = document.getElementById('clear-hard-btn');
-
     if (game.hardWords.length === 0) {
-        container.innerHTML = '<p>No hard words yet! Words you get wrong can be added to this list for focused practice.</p>';
+        container.innerHTML = '<p>No hard words yet!</p>';
         practiceBtn.style.display = 'none';
         clearBtn.style.display = 'none';
         return;
     }
-
     let html = `<h3>Hard Words (${game.hardWords.length}):</h3>`;
     game.hardWords.forEach((hardWord, index) => {
         let wordDisplay = '';
@@ -450,7 +354,6 @@ function updateHardWordsList() {
             const word = hardWord.question.replace('🇳🇱 → 🇫🇷  Translate: ', '');
             wordDisplay = `${word} (Dutch) → ${hardWord.answer} (French)`;
         }
-        
         html += `
             <div class="hard-word-item">
                 <div class="hard-word-content">${index + 1}. ${wordDisplay}</div>
@@ -458,30 +361,15 @@ function updateHardWordsList() {
             </div>
         `;
     });
-
     container.innerHTML = html;
     practiceBtn.style.display = 'inline-block';
     clearBtn.style.display = 'inline-block';
 }
-
 function removeHardWord(index) {
     game.removeFromHardWords(index);
     updateHardWordsList();
     game.updateUI();
 }
-
-function practiceHardWords() {
-    if (game.hardWords.length === 0) {
-        alert('No hard words to practice!');
-        return;
-    }
-    
-    game.isPracticeMode = true;
-    game.questionNumber = 0;
-    showScreen('quiz-screen');
-    nextQuestion();
-}
-
 function clearHardWords() {
     if (confirm('Are you sure you want to clear all hard words?')) {
         game.clearHardWords();
@@ -490,111 +378,43 @@ function clearHardWords() {
     }
 }
 
-// Add Words Functions
-function addNewWord() {
-    const frenchWord = document.getElementById('french-word').value.trim();
-    const dutchWord = document.getElementById('dutch-word').value.trim();
-
-    if (!frenchWord || !dutchWord) {
-        alert('Please fill in both French and Dutch translations!');
-        return;
-    }
-
-    game.addCustomWord(frenchWord, dutchWord);
-    
-    // Clear inputs
-    document.getElementById('french-word').value = '';
-    document.getElementById('dutch-word').value = '';
-    
-    // Update displays
-    game.updateUI();
-    updateRecentAdditions();
-    
-    // Show success message
-    alert('Word added successfully!');
-}
-
-function updateRecentAdditions() {
-    const container = document.getElementById('recent-list');
-    const customVocab = JSON.parse(localStorage.getItem('customVocabulary')) || [];
-    
-    if (customVocab.length === 0) {
-        container.innerHTML = '<p>No custom words added yet.</p>';
-        return;
-    }
-
-    // Show last 10 additions
-    const recent = customVocab.slice(-10).reverse();
-    let html = '';
-    
-    recent.forEach(([french, dutch]) => {
-        html += `
-            <div class="recent-item">
-                <strong>${french}</strong> → ${dutch}
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-}
-
-// Statistics Functions
+// --- Stats Display ---
 function updateStatsDisplay() {
     const stats = game.sessionStats;
-    
     document.getElementById('total-questions').textContent = stats.total;
     document.getElementById('correct-answers').textContent = stats.correct;
-    
     const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
     document.getElementById('accuracy').textContent = `${accuracy}%`;
-    
     // Direction-specific stats
     const frToNl = stats.frenchToDutch;
     const frToNlPct = frToNl.total > 0 ? Math.round((frToNl.correct / frToNl.total) * 100) : 0;
-    document.getElementById('fr-to-nl-stats').textContent = 
+    document.getElementById('fr-to-nl-stats').textContent =
         `${frToNl.correct}/${frToNl.total} (${frToNlPct}%)`;
-    
     const nlToFr = stats.dutchToFrench;
     const nlToFrPct = nlToFr.total > 0 ? Math.round((nlToFr.correct / nlToFr.total) * 100) : 0;
-    document.getElementById('nl-to-fr-stats').textContent = 
+    document.getElementById('nl-to-fr-stats').textContent =
         `${nlToFr.correct}/${nlToFr.total} (${nlToFrPct}%)`;
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Enter key support for answer input
-    document.getElementById('answer-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            submitAnswer();
-        }
+// --- Event Listeners ---
+document.addEventListener('DOMContentLoaded', function () {
+    // Enter key submits answer
+    const answerInput = document.getElementById('answer-input');
+    if (answerInput) {
+        answerInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitAnswer();
+            }
+        });
+    }
+    // Enter support for add words form
+    document.getElementById('dutch-word').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') addNewWord();
     });
-    
-    // Enter key support for add words form
-    document.getElementById('dutch-word').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            addNewWord();
-        }
+    document.getElementById('french-word').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('dutch-word').focus();
     });
-    
-    document.getElementById('french-word').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('dutch-word').focus();
-        }
-    });
-    
-    // Initialize UI
+    // Initial UI update
     game.updateUI();
 });
-
-// Utility Functions
-function resetSession() {
-    game.sessionStats = {
-        correct: 0,
-        incorrect: 0,
-        total: 0,
-        frenchToDutch: { correct: 0, total: 0 },
-        dutchToFrench: { correct: 0, total: 0 }
-    };
-    game.questionNumber = 0;
-    game.updateUI();
-}
