@@ -1,4 +1,4 @@
-// ---- Login logic ----
+// Just-for-fun login (no real security!)
 window.tryLogin = function() {
   const uname = document.getElementById('login-username').value.trim();
   const pw = document.getElementById('login-password').value;
@@ -30,6 +30,7 @@ window.tryLogin = function() {
 };
 function showApp() {
   document.getElementById('login-screen').style.display = "none";
+  document.getElementById('login-screen').classList.remove("active");
   Array.from(document.querySelectorAll('.screen')).forEach(s=>{
     if(s.id!=="login-screen") s.style.display="";
     s.classList.remove('active');
@@ -46,12 +47,12 @@ window.logout = function() {
     s.classList.remove('active');
   });
   document.getElementById('login-screen').classList.add('active');
+  document.getElementById('login-screen').style.display = "flex";
   document.getElementById('language-selector').style.display = "none";
 };
 window.currentUser = function() {
   return localStorage.getItem("voc_user_current") || "";
 };
-// ---- End login logic ----
 
 // --- Language pairs and vocab ---
 const ALLOWED_PAIRS = [
@@ -63,7 +64,6 @@ const LANGUAGES = [
   { code: "nl", name: "Dutch" },
   { code: "en", name: "English" }
 ];
-// Built-in vocab for both pairs, a couple of entries each
 const VOCAB = {
   "fr-nl": [
     ["la pomme", "de appel"],
@@ -389,8 +389,7 @@ window.updateAll = function() {
   updateUI();
 };
 document.addEventListener('DOMContentLoaded', function () {
-  // Auto-login if possible
-  if (window.currentUser()) showApp();
+  if (localStorage.getItem("voc_user_current")) showApp();
   updateLangSelector();
   updateRecentAdditions();
   updateHardWordsList();
