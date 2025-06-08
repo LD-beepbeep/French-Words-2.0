@@ -17,18 +17,19 @@ const SUPPORTED_LANGS = [
 ];
 
 function App() {
+  // Language selection
   const [fromLang, setFromLang] = useState("fr");
   const [toLang, setToLang] = useState("nl");
+  // Word storage
   const [words, setWords] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("vocab_words_v2")) || [];
-    } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("vocab_words_v2")) || []; }
+    catch { return []; }
   });
   const [hardWords, setHardWords] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("vocab_hard_v2")) || [];
-    } catch { return []; }
+    try { return JSON.parse(localStorage.getItem("vocab_hard_v2")) || []; }
+    catch { return []; }
   });
+  // Quiz modal state
   const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
