@@ -126,9 +126,7 @@
       align-items: center !important;
       justify-content: center !important;
     }
-    .modal.active {
-      display: flex;
-    }
+    .modal.active { display: flex; }
     .modal-content {
       background: rgba(30, 44, 71, 0.99);
       padding: 2.3em 2em 1.7em 2em;
@@ -239,23 +237,34 @@
     </div>
   </div>
   <div class="container">
-    <div id="language-selector">
+    <!-- Login screen -->
+    <div id="login-screen" class="screen active">
+      <h2>Login to VOC Trainer</h2>
+      <label for="login-username">Username</label>
+      <input type="text" id="login-username" autocomplete="username">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" autocomplete="current-password">
+      <button class="btn btn-accent" onclick="window.tryLogin()">Login</button>
+      <div><span id="login-error" style="color:#ff6e6e;"></span></div>
+    </div>
+    <!-- App screens -->
+    <div id="language-selector" style="display:none">
       <label for="lang-choice">Quiz Language: </label>
       <select id="lang-choice">
-        <option value="fr-nl">French → Dutch</option>
-        <option value="nl-fr">Dutch → French</option>
-        <option value="nl-en">Dutch → English</option>
-        <option value="en-nl">English → Dutch</option>
+        <option value="fr-nl">French ⇄ Dutch</option>
+        <option value="en-nl">English ⇄ Dutch</option>
       </select>
     </div>
-    <div id="main-menu" class="screen active">
+    <div id="main-menu" class="screen">
       <h1 class="centered-title">Vocabulary Trainer</h1>
       <div class="menu-list">
         <button class="btn btn-secondary" onclick="showScreen('add-word-menu')">Add New Word</button>
+        <button class="btn btn-accent" onclick="showScreen('upload-bulk-menu')">Bulk Upload</button>
         <button class="btn" onclick="startQuiz()">Start Quiz</button>
         <button class="btn" onclick="showScreen('practice-hard-menu')">Practice Hard Words</button>
         <button class="btn" onclick="showScreen('practice-custom-menu')">Practice Custom Words</button>
         <button class="btn btn-secondary" onclick="showStatsScreen()">View Stats</button>
+        <button class="btn btn-secondary" onclick="window.logout()">Logout</button>
       </div>
       <div style="margin: 1.3em 0 1.2em 0;">
         <p>Words in vocabulary: <span id="vocab-count"></span></p>
@@ -265,10 +274,33 @@
         Made by Lars for students! 📚
       </div>
     </div>
+    <!-- Bulk Upload Screen -->
+    <div id="upload-bulk-menu" class="screen">
+      <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+      <h2 class="centered-title">Bulk Upload Words</h2>
+      <div style="margin-bottom:1em;">
+        <input type="file" id="bulk-upload-file" accept=".txt,.csv">
+        <select id="bulk-from-lang">
+          <option value="fr">French</option>
+          <option value="nl">Dutch</option>
+          <option value="en">English</option>
+        </select>
+        →
+        <select id="bulk-to-lang">
+          <option value="fr">French</option>
+          <option value="nl">Dutch</option>
+          <option value="en">English</option>
+        </select>
+        <button class="btn btn-accent" id="bulk-upload-btn">Upload &amp; Preview</button>
+      </div>
+      <div id="bulk-upload-preview"></div>
+    </div>
     <div id="quiz-screen" class="screen">
       <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
       <h2 class="centered-title">Quiz</h2>
       <div style="margin-bottom:1.5em; text-align:center;">
+        <span id="quiz-direction-label" style="font-weight:700;font-size:1.12em;letter-spacing:.02em;"></span>
+        <br>
         <span id="question-direction" style="font-weight:600; color:var(--primary);"></span>
         <span id="question-text" style="font-weight:500;"></span>
       </div>
