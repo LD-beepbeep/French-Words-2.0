@@ -219,6 +219,11 @@
       from { transform: scale(.90); opacity: 0; }
       to   { transform: scale(1); opacity: 1; }
     }
+    #login-screen {
+      display: flex; flex-direction: column; gap: 1.3em; align-items: center; margin-bottom: 2em;
+    }
+    #login-screen label { display: block; text-align:left; margin-bottom: 0.3em; }
+    #login-error { color: #ff6e6e; }
     @media (max-width: 600px) {
       .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
       h1 { font-size: 1.26rem;}
@@ -237,7 +242,7 @@
     </div>
   </div>
   <div class="container">
-    <!-- Login screen -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
       <h2>Login to VOC Trainer</h2>
       <label for="login-username">Username</label>
@@ -245,9 +250,9 @@
       <label for="login-password">Password</label>
       <input type="password" id="login-password" autocomplete="current-password">
       <button class="btn btn-accent" onclick="window.tryLogin()">Login</button>
-      <div><span id="login-error" style="color:#ff6e6e;"></span></div>
+      <div><span id="login-error"></span></div>
     </div>
-    <!-- App screens -->
+    <!-- Main App Screens -->
     <div id="language-selector" style="display:none">
       <label for="lang-choice">Quiz Language: </label>
       <select id="lang-choice">
@@ -298,7 +303,7 @@
     <div id="quiz-screen" class="screen">
       <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
       <h2 class="centered-title">Quiz</h2>
-      <div style="margin-bottom:1.5em; text-align:center;">
+      <div style="margin-bottom:1.2em; text-align:center;">
         <span id="quiz-direction-label" style="font-weight:700;font-size:1.12em;letter-spacing:.02em;"></span>
         <br>
         <span id="question-direction" style="font-weight:600; color:var(--primary);"></span>
