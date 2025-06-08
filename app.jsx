@@ -95,5 +95,31 @@ function App() {
     </div>
   );
 }
+import { ThemeProvider, useTheme } from "./theme";
+// ... (rest of your imports)
 
+function ThemeToggleBtn() {
+  const { theme, setTheme } = useTheme();
+  return (
+    <button className="theme-toggle"
+      title="Switch theme"
+      aria-label="Switch theme"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      {theme === "dark" ? "🌞" : "🌙"}
+    </button>
+  );
+}
+
+function App() {
+  // ... (your app state as before)
+  return (
+    <ThemeProvider>
+      <div className="container">
+        <ThemeToggleBtn />
+        {/* ...rest of your UI... */}
+      </div>
+    </ThemeProvider>
+  );
+}
 export default App;
