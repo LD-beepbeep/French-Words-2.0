@@ -29,7 +29,7 @@ function UploadBulk({ fromLang, toLang, setWords, words, supported }) {
 
   return (
     <div className="card">
-      <h3>Bulk Upload</h3>
+      <h3>Bulk Upload (with AI parsing coming soon!)</h3>
       <input type="file" ref={fileRef} onChange={handleFile} />
       <div>
         <label>From</label>
