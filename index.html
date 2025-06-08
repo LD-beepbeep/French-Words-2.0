@@ -215,11 +215,6 @@
       font-size: 1.08em; color: #fffde4; font-weight: 500;
       margin-top: 0.3em; text-shadow: 0 1px 9px #3a8bfd80;
     }
-    #login-screen {
-      display: flex; flex-direction: column; gap: 1.3em; align-items: center; margin-bottom: 2em;
-    }
-    #login-screen label { display: block; text-align:left; margin-bottom: 0.3em; }
-    #login-error { color: #ff6e6e; }
     @media (max-width: 600px) {
       .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
       h1 { font-size: 1.26rem;}
@@ -376,21 +371,25 @@
       </div>
     </div>
   </div>
+  <script src="script.js"></script>
   <script>
-    // Splash screen fade-out, then show login
+    // Splash screen: login only appears after splash, or directly shows app if logged in
     document.addEventListener("DOMContentLoaded", function(){
+      document.getElementById('login-screen').classList.remove("active");
+      document.getElementById('login-screen').style.display = "none";
       setTimeout(function(){
         document.getElementById("splash").classList.add("hide");
         setTimeout(function(){
           document.getElementById("splash").style.display = "none";
-          document.getElementById('login-screen').classList.add("active");
+          if (!localStorage.getItem("voc_user_current")) {
+            document.getElementById('login-screen').classList.add("active");
+            document.getElementById('login-screen').style.display = "flex";
+          } else {
+            if (typeof showApp === "function") showApp();
+          }
         }, 1100);
       }, 1500);
-
-      // Hide login by default until splash is gone
-      document.getElementById('login-screen').classList.remove("active");
     });
   </script>
-  <script src="script.js"></script>
 </body>
 </html>
