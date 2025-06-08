@@ -41,13 +41,15 @@ function showApp() {
 }
 window.logout = function() {
   localStorage.removeItem("voc_user_current");
-  document.getElementById('login-screen').style.display = "";
+  document.getElementById('login-username').value = "";
+  document.getElementById('login-password').value = "";
+  document.getElementById('login-error').textContent = "";
+  document.getElementById('login-screen').style.display = "flex";
+  document.getElementById('login-screen').classList.add('active');
   Array.from(document.querySelectorAll('.screen')).forEach(s=>{
     if(s.id!=="login-screen") s.style.display="none";
     s.classList.remove('active');
   });
-  document.getElementById('login-screen').classList.add('active');
-  document.getElementById('login-screen').style.display = "flex";
   document.getElementById('language-selector').style.display = "none";
 };
 window.currentUser = function() {
@@ -188,7 +190,7 @@ window.addNewWord = function() {
   updateUI();
   alert('Word added!');
 };
-// Bulk upload support
+// Bulk upload support (improved and smarter)
 document.addEventListener("DOMContentLoaded", function() {
   const bulkBtn = document.getElementById('bulk-upload-btn');
   if (bulkBtn) bulkBtn.onclick = function() {
@@ -200,23 +202,41 @@ document.addEventListener("DOMContentLoaded", function() {
     const reader = new FileReader();
     reader.onload = function(e) {
       let lines = e.target.result.split(/\r?\n/).filter(Boolean);
-      let pairs = lines.map(line => {
-        const [a, b] = line.split(/[;,|\t]/);
-        return a && b ? [a.trim(), b.trim()] : null;
-      }).filter(Boolean);
+      let pairs = [];
+      for (let line of lines) {
+        // Try all common separators
+        let parts = line.split(/[,;|\t\-–—]/);
+        if (parts.length < 2) continue;
+        // If more than 2, join the rest
+        let left = parts[0].trim();
+        let right = parts.slice(1).join(' ').trim();
+        if (!left || !right) continue;
+        pairs.push([left, right]);
+      }
+      // Remove duplicates (for this user/pair)
+      const key = `voc_${window.currentUser()}_custom_${from}_${to}`;
+      let existing = JSON.parse(localStorage.getItem(key) || "[]");
+      let before = existing.length;
+      let added = 0;
+      let skippedDup = 0;
+      let actualAddedPairs = [];
+      for (let [left, right] of pairs) {
+        if (existing.some(([l, r]) => l === left && r === right)) {
+          skippedDup++;
+          continue;
+        }
+        existing.push([left, right]);
+        actualAddedPairs.push([left, right]);
+        added++;
+      }
+      localStorage.setItem(key, JSON.stringify(existing));
       let preview = document.getElementById('bulk-upload-preview');
-      preview.innerHTML = pairs.length
-        ? `<b>Preview:</b><br>${pairs.map(p=>`${p[0]} → ${p[1]}`).join('<br>')}
-            <br><button class="btn" id="bulk-add-all-btn">Add all</button>`
-        : "<span style='color:#e77171'>No valid word pairs found.</span>";
-      document.getElementById('bulk-add-all-btn').onclick = function() {
-        const key = `voc_${window.currentUser()}_custom_${from}_${to}`;
-        let existing = JSON.parse(localStorage.getItem(key) || "[]");
-        existing = existing.concat(pairs);
-        localStorage.setItem(key, JSON.stringify(existing));
-        preview.innerHTML = "Added!";
-        updateAll();
-      };
+      preview.innerHTML =
+        `<b>Found:</b> ${pairs.length} pairs.<br><b>Added:</b> ${added} new word pairs.<br>` +
+        (skippedDup ? `<b>Skipped:</b> ${skippedDup} duplicates.<br>` : "") +
+        (actualAddedPairs.length ? `<b>Pairs added:</b><br><div style='max-height:140px;overflow:auto;line-height:1.6em'>${actualAddedPairs.map(p=>`${p[0]} → ${p[1]}`).join('<br>')}</div>` : "No new pairs added.") +
+        `<br><button class="btn" onclick="showScreen('main-menu')">Back to Menu</button>`;
+      updateAll();
     };
     reader.readAsText(file);
   };
