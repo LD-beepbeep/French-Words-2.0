@@ -1,55 +1,91 @@
-// --- Only French↔Dutch, Dutch↔French, Dutch↔English, English↔Dutch pairs ---
+// ---- Login logic ----
+window.tryLogin = function() {
+  const uname = document.getElementById('login-username').value.trim();
+  const pw = document.getElementById('login-password').value;
+  const error = document.getElementById('login-error');
+  if (!uname || !pw) { error.textContent = "Please enter username and password."; return; }
+  const userKey = `voc_user_${uname}`;
+  const stored = JSON.parse(localStorage.getItem(userKey) || "{}");
+  if (!stored.password) {
+    localStorage.setItem(userKey, JSON.stringify({password: pw}));
+    localStorage.setItem("voc_user_current", uname);
+    showApp();
+    return;
+  }
+  if (stored.password === pw) {
+    localStorage.setItem("voc_user_current", uname);
+    showApp();
+    return;
+  }
+  if (confirm("Wrong password. Forgot password?")) {
+    const npw = prompt("Enter a new password:");
+    if (npw && npw.length >= 1) {
+      localStorage.setItem(userKey, JSON.stringify({password: npw}));
+      localStorage.setItem("voc_user_current", uname);
+      showApp();
+      return;
+    }
+  }
+  error.textContent = "Wrong password. Try again.";
+};
+function showApp() {
+  document.getElementById('login-screen').style.display = "none";
+  Array.from(document.querySelectorAll('.screen')).forEach(s=>{
+    if(s.id!=="login-screen") s.style.display="";
+    s.classList.remove('active');
+  });
+  document.getElementById('main-menu').classList.add('active');
+  document.getElementById('language-selector').style.display = "";
+  window.updateAll();
+}
+window.logout = function() {
+  localStorage.removeItem("voc_user_current");
+  document.getElementById('login-screen').style.display = "";
+  Array.from(document.querySelectorAll('.screen')).forEach(s=>{
+    if(s.id!=="login-screen") s.style.display="none";
+    s.classList.remove('active');
+  });
+  document.getElementById('login-screen').classList.add('active');
+  document.getElementById('language-selector').style.display = "none";
+};
+window.currentUser = function() {
+  return localStorage.getItem("voc_user_current") || "";
+};
+// ---- End login logic ----
+
+// --- Language pairs and vocab ---
 const ALLOWED_PAIRS = [
-  ["fr", "nl"],
-  ["nl", "fr"],
-  ["nl", "en"],
-  ["en", "nl"]
+  ["fr", "nl"], // French-Dutch
+  ["en", "nl"]  // English-Dutch
 ];
 const LANGUAGES = [
   { code: "fr", name: "French" },
   { code: "nl", name: "Dutch" },
   { code: "en", name: "English" }
 ];
-
-const VOCAB = [
-  ["la banlieue", "de buitenwijken"], ["la campagne", "het platteland"], ["la commune", "de gemeente"],
-  ["le pays", "het land"], ["la région", "de streek, de regio"], ["le loft", "de loft"],
-  ["le logement", "de woonst, de slaapgelegenheid"], ["la maison de rangée", "de rijwoning"],
-  ["la micro-maison", "de microwoning"], ["le studio", "de studio"], ["la Tiny", "de microwoning, het tiny house"],
-  ["la villa", "de villa"], ["abordable", "betaalbaar"], ["agréable", "aangenaam, gezellig"], ["cher, chère", "duur"],
-  ["clos(e)", "afgesloten"], ["confortable", "comfortabel"], ["écologique", "ecologisch"],
-  ["équipé(e) (de)", "voorzien (van), uitgerust (met)"], ["étroit(e)", "smal"], ["magnifique", "prachtig"],
-  ["pratique", "praktisch"], ["spacieux, spacieuse", "ruim"], ["rose", "jaune"],
-  ["blanc, blanche", "vert(e)"], ["noir(e)", "brun(e)"], ["rouge", "mauve"], ["bleu(e)", "orange"], ["gris(e)", ""],
-  ["construire", "bouwen"], ["déménager", "verhuizen"], ["entretenir", "onderhouden"], ["nettoyer", "poetsen"],
-  ["prendre une douche", "zich douchen"], ["ranger", "opruimen"], ["réparer", "herstellen"], ["se changer", "zich omkleden"],
-  ["se déshabiller", "zich uitkleden"], ["se réveiller", "wakker worden"], ["vivre", "wonen, leven"],
-  ["l’ascenseur (m)", "de lift"], ["l’armoire (f)", "de kast"], ["la baignoire", "het bad"], ["le balai", "de bezem"],
-  ["le barbecue", "de barbecue"], ["le cadre", "de lijst, de omlijsting"], ["la cafetière", "het koffiezetapparaat"],
-  ["la casserole", "de kookpan"], ["la chaise", "de stoel"], ["le congélateur", "de diepvriezer"],
-  ["la douche", "de douche"], ["le drap", "het laken"], ["l’étagère (f)", "het rek"], ["l’évier (m)", "de gootsteen"],
-  ["le fauteuil", "de zetel"], ["la fenêtre", "het raam"], ["la garde-robe", "de garderobe, de kleerkast"],
-  ["le grille-pain", "de broodrooster"], ["le haut-parleur", "de luidspreker, de (muziek)box"], ["la lampe", "de lamp"],
-  ["le lavabo", "de wastafel"], ["le lave-vaisselle", "de vaatwasser"], ["le lit", "het bed"], ["le miroir", "de spiegel"],
-  ["l’ordinateur (m)", "de computer"], ["l’oreiller (m)", "het hoofdkussen"], ["le panier à linge", "de linnenmand"],
-  ["le poster", "de poster"], ["la poubelle", "de vuilnisbak"], ["le rasoir", "het scheerapparaat"],
-  ["le réveil", "de wekker"], ["le rideau", "het gordijn"], ["le robinet", "de kraan"], ["le tableau", "het schilderij"],
-  ["la table de nuit", "het nachtkastje"], ["le tapis", "het tapijt"], ["la télé", "de televisie"],
-  ["la télécommande", "de afstandsbediening"], ["la tondeuse à gazon", "de grasmaaier"], ["le bureau", "het bureau"],
-  ["la cabane de jardin", "het tuinhuis"], ["la cave", "de kelder"], ["la chambre à coucher", "de slaapkamer"],
-  ["le couloir", "de gang"], ["la cuisine", "de keuken"], ["le débarras", "de berging"], ["le garage", "de garage"],
-  ["le grenier", "de zolder"], ["le hall (d’entrée)", "de (inkom)hal"], ["le jardin", "de tuin"],
-  ["le living", "de woonkamer"], ["la mezzanine", "de mezzanine, de tussenverdieping"], ["la pièce", "de kamer, het vertrek"],
-  ["la piscine", "het zwembad"], ["le premier étage", "de eerste verdieping"], ["le rez-de-chaussée", "de begane grond"],
-  ["la salle à manger", "de eetkamer"], ["la salle de bains", "de badkamer"], ["la salle de séjour", "de woonkamer"],
-  ["le salon", "het salon"], ["la terrasse", "het terras"], ["les toilettes (f)", "het toilet, de w"]
-];
+// Built-in vocab for both pairs, a couple of entries each
+const VOCAB = {
+  "fr-nl": [
+    ["la pomme", "de appel"],
+    ["le pain", "het brood"],
+    ["le livre", "het boek"],
+    ["le chat", "de kat"],
+    ["la maison", "het huis"]
+  ],
+  "en-nl": [
+    ["apple", "appel"],
+    ["book", "boek"],
+    ["cat", "kat"],
+    ["house", "huis"],
+    ["water", "water"]
+  ]
+};
 
 let currentPair = ["fr", "nl"];
 function updateLangSelector() {
   const sel = document.getElementById('lang-choice');
   sel.innerHTML = ALLOWED_PAIRS.map(([from, to]) =>
-    `<option value="${from}-${to}">${getLangName(from)} → ${getLangName(to)}</option>`
+    `<option value="${from}-${to}">${getLangName(from)} ⇄ ${getLangName(to)}</option>`
   ).join('');
   sel.value = currentPair.join('-');
 }
@@ -57,43 +93,19 @@ function getLangName(code) {
   const l = LANGUAGES.find(l => l.code === code);
   return l ? l.name : code;
 }
-document.addEventListener("DOMContentLoaded", function() {
-  updateLangSelector();
-  document.getElementById('lang-choice').onchange = function() {
-    currentPair = this.value.split('-');
-    updateAll();
-  };
-  // Splash Screen
-  const splash = document.getElementById('splash');
-  setTimeout(() => {
-    splash.classList.add('hide');
-    setTimeout(() => splash.style.display = "none", 700);
-  }, 1100);
-  updateAll();
-});
-
-function pairKey() { return `vocab_custom_${currentPair[0]}_${currentPair[1]}`; }
-function pairHardKey() { return `vocab_hard_${currentPair[0]}_${currentPair[1]}`; }
+function pairKey() { return `voc_${window.currentUser()}_custom_${currentPair[0]}_${currentPair[1]}`; }
+function pairHardKey() { return `voc_${window.currentUser()}_hard_${currentPair[0]}_${currentPair[1]}`; }
 function loadCustomWords() { return JSON.parse(localStorage.getItem(pairKey())) || []; }
 function saveCustomWords(words) { localStorage.setItem(pairKey(), JSON.stringify(words)); }
 function loadHardWords() { return JSON.parse(localStorage.getItem(pairHardKey())) || []; }
 function saveHardWords(words) { localStorage.setItem(pairHardKey(), JSON.stringify(words)); }
-
 function allWords() {
-  let base = [];
-  if ((currentPair[0] === "fr" && currentPair[1] === "nl") || (currentPair[0] === "nl" && currentPair[1] === "fr")) {
-    base = VOCAB.map(([fr, nl]) =>
-      currentPair[0] === "fr" ? [fr, nl] : [nl, fr]
-    );
-  }
+  const base = VOCAB[`${currentPair[0]}-${currentPair[1]}`] || VOCAB[`${currentPair[1]}-${currentPair[0]}`]?.map(([a,b])=>[b,a]) || [];
   return base.concat(loadCustomWords());
 }
-
-// --- Per-direction stats per language pair ---
 let statsAll = JSON.parse(localStorage.getItem("VOC_STATS") || "{}");
-
 function saveStats() { localStorage.setItem("VOC_STATS", JSON.stringify(statsAll)); }
-function getStatsKey() { return currentPair.join("-"); }
+function getStatsKey() { return window.currentUser() + "_" + currentPair.join("-"); }
 function getStats() {
   if (!statsAll[getStatsKey()]) {
     statsAll[getStatsKey()] = {
@@ -114,7 +126,6 @@ function incStat(dir, correct) {
   }
   saveStats();
 }
-
 function updateRecentAdditions() {
   const container = document.getElementById('recent-list');
   if (!container) return;
@@ -135,7 +146,6 @@ window.removeCustomWord = function(idx) {
   updateRecentAdditions();
   updateUI();
 };
-
 function updateHardWordsList() {
   const container = document.getElementById('hard-words-list');
   const clearBtn = document.getElementById('clear-hard-btn');
@@ -164,7 +174,6 @@ window.clearHardWords = function() {
     updateUI();
   }
 };
-
 window.addNewWord = function() {
   const from = document.getElementById('custom-from-word').value.trim();
   const to = document.getElementById('custom-to-word').value.trim();
@@ -179,7 +188,39 @@ window.addNewWord = function() {
   updateUI();
   alert('Word added!');
 };
-
+// Bulk upload support
+document.addEventListener("DOMContentLoaded", function() {
+  const bulkBtn = document.getElementById('bulk-upload-btn');
+  if (bulkBtn) bulkBtn.onclick = function() {
+    const file = document.getElementById('bulk-upload-file').files[0];
+    const from = document.getElementById('bulk-from-lang').value;
+    const to = document.getElementById('bulk-to-lang').value;
+    if (!file) return alert("Select a file!");
+    if (from === to) return alert("Pick different languages!");
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      let lines = e.target.result.split(/\r?\n/).filter(Boolean);
+      let pairs = lines.map(line => {
+        const [a, b] = line.split(/[;,|\t]/);
+        return a && b ? [a.trim(), b.trim()] : null;
+      }).filter(Boolean);
+      let preview = document.getElementById('bulk-upload-preview');
+      preview.innerHTML = pairs.length
+        ? `<b>Preview:</b><br>${pairs.map(p=>`${p[0]} → ${p[1]}`).join('<br>')}
+            <br><button class="btn" id="bulk-add-all-btn">Add all</button>`
+        : "<span style='color:#e77171'>No valid word pairs found.</span>";
+      document.getElementById('bulk-add-all-btn').onclick = function() {
+        const key = `voc_${window.currentUser()}_custom_${from}_${to}`;
+        let existing = JSON.parse(localStorage.getItem(key) || "[]");
+        existing = existing.concat(pairs);
+        localStorage.setItem(key, JSON.stringify(existing));
+        preview.innerHTML = "Added!";
+        updateAll();
+      };
+    };
+    reader.readAsText(file);
+  };
+});
 let quizState = {
   isHard: false,
   isCustom: false,
@@ -188,9 +229,20 @@ let quizState = {
   currentA: null,
   currentDir: null,
   pendingHard: null,
+  quizPair: null
 };
+function randomQuizPair() {
+  // For quiz, pick a direction
+  if (document.getElementById('lang-choice')) {
+    const [from, to] = document.getElementById('lang-choice').value.split('-');
+    currentPair = [from, to];
+  }
+  return currentPair;
+}
 function generateQuestion() {
+  quizState.quizPair = randomQuizPair();
   let pairs;
+  let [fromLang, toLang] = quizState.quizPair;
   if (quizState.isHard) {
     pairs = loadHardWords().map(hw => [hw.question, hw.answer]);
   } else if (quizState.isCustom) {
@@ -200,11 +252,17 @@ function generateQuestion() {
   }
   if (!pairs.length) return null;
   const [from, to] = pairs[Math.floor(Math.random() * pairs.length)];
+  // Pick translation direction randomly
   const askFrom = Math.random() < 0.5;
   quizState.currentQ = askFrom ? from : to;
   quizState.currentA = askFrom ? to : from;
   quizState.currentDir = askFrom ? 'from_to' : 'to_from';
   quizState.qNum++;
+  // Set quiz direction label
+  let fromName = getLangName(fromLang);
+  let toName = getLangName(toLang);
+  let label = askFrom ? `${fromName} → ${toName}` : `${toName} → ${fromName}`;
+  document.getElementById('quiz-direction-label').textContent = label;
   return { question: quizState.currentQ, answer: quizState.currentA, direction: quizState.currentDir };
 }
 window.startQuiz = function() {
@@ -308,6 +366,10 @@ window.showScreen = function(screenId) {
     updateHardWordsList();
     updateUI();
   }
+  if (screenId === 'upload-bulk-menu') {
+    if (document.getElementById('bulk-upload-preview'))
+      document.getElementById('bulk-upload-preview').innerHTML = '';
+  }
 };
 window.showStatsScreen = function() {
   updateStatsDisplay();
@@ -319,23 +381,16 @@ function updateStatsDisplay() {
   document.getElementById('correct-answers').textContent = s.total_correct;
   const acc = s.total_total > 0 ? Math.round((s.total_correct / s.total_total) * 100) : 0;
   document.getElementById('accuracy').textContent = `${acc}%`;
-  // Detailed directions
-  document.getElementById('fr-to-nl-correct').textContent = s.from_to ? s.from_to.correct : 0;
-  document.getElementById('fr-to-nl-total').textContent = s.from_to ? s.from_to.total : 0;
-  document.getElementById('fr-to-nl-accuracy').textContent = s.from_to && s.from_to.total > 0 ? Math.round((s.from_to.correct/s.from_to.total)*100)+'%' : '-';
-  document.getElementById('nl-to-fr-correct').textContent = s.to_from ? s.to_from.correct : 0;
-  document.getElementById('nl-to-fr-total').textContent = s.to_from ? s.to_from.total : 0;
-  document.getElementById('nl-to-fr-accuracy').textContent = s.to_from && s.to_from.total > 0 ? Math.round((s.to_from.correct/s.to_from.total)*100)+'%' : '-';
 }
-
 window.updateAll = function() {
   updateLangSelector();
   updateRecentAdditions();
   updateHardWordsList();
   updateUI();
 };
-
 document.addEventListener('DOMContentLoaded', function () {
+  // Auto-login if possible
+  if (window.currentUser()) showApp();
   updateLangSelector();
   updateRecentAdditions();
   updateHardWordsList();
@@ -348,18 +403,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('custom-from-word').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') document.getElementById('custom-to-word').focus();
     });
+  document.getElementById('lang-choice').onchange = function() {
+    currentPair = this.value.split('-');
+    window.updateAll();
+  };
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       document.getElementById('hard-words-modal').classList.remove('active');
       document.body.style.overflow = '';
     }
   });
-});
-document.addEventListener("DOMContentLoaded", function(){
-  setTimeout(function(){
-    document.getElementById("splash").classList.add("hide");
-    setTimeout(function(){
-      document.getElementById("splash").style.display = "none";
-    }, 1100);
-  }, 1600);
 });
