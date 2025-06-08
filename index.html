@@ -15,7 +15,6 @@
       --border: rgba(255,255,255,0.18);
       --text-light: #e8f1fd;
       --text-dark: #222a35;
-      --splash-glow: 0 0 48px 12px #65d6ff44, 0 0 18px 7px #38cfa733, 0 0 0 #0000;
     }
     html, body { height: 100%; }
     body {
@@ -181,67 +180,71 @@
       font-weight: 600; color: var(--accent); border-bottom: 1.5px solid var(--accent);
     }
     .stats-table td { font-weight: 500; }
-    /* Pretty Splash Screen */
-    .splash {
-      position: fixed;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(ellipse at 60% 40%, #38cfa744 0 40%, #151c28 100%);
-      color: #e8f1fd;
-      display: flex; align-items: center; justify-content: center;
-      z-index: 99999;
-      font-family: 'Inter', Arial, sans-serif;
-      font-size: 2.3rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      opacity: 1; pointer-events: all;
-      transition: opacity 1.1s cubic-bezier(.5,1,.5,1);
+    /* Login styling */
+    #login-screen {
+      display: none;
       flex-direction: column;
-      text-align: center;
-      box-shadow: 0 0 60px 8px #38cfa744, 0 0 0 #0000;
+      gap: 1.1em;
+      align-items: center;
+      margin-bottom: 2em;
+      background: var(--glass);
+      border-radius: 1.2em;
+      padding: 2em 1.5em 1.3em 1.5em;
+      box-shadow: 0 3px 28px #38cfa745;
+      min-width: 260px;
+      max-width: 340px;
+      margin: 0 auto 2em auto;
+      animation: modalpop 0.22s cubic-bezier(0.26,0.6,0.41,1.3);
     }
-    .splash.hide { opacity: 0; pointer-events: none; }
-    .splash-inner { animation: splashpop 0.8s cubic-bezier(.3,1.3,.3,1.07); }
-    .splash-logo {
-      font-size: 2.5em; color: #3a8bfd;
-      margin-bottom: 0.13em; letter-spacing: 0.04em;
-      text-shadow: 0 3px 24px #65d6ff88, 0 0 0 #0000;
+    #login-screen.active { display: flex; }
+    #login-header {
+      font-size: 1.44em; font-weight: 700; color: var(--primary);
+      margin-bottom: 0.2em; letter-spacing: 0.01em;
     }
-    .splash-by {
-      font-size: 1.1em; color: #38cfa7; font-weight: 600;
-      margin-bottom: 0.2em; letter-spacing: 2px;
-      text-shadow: 0 1px 12px #38cfa7aa;
+    #login-sub {
+      font-size: 1em; color: var(--accent); margin-bottom: 0.9em;
+      text-shadow: 0 1px 9px #38cfa7aa;
     }
-    .splash-fun {
-      font-size: 1.08em; color: #fffde4; font-weight: 500;
-      margin-top: 0.3em; text-shadow: 0 1px 9px #3a8bfd80;
+    #login-error { color: #ff6e6e; font-size: 1em; margin-top:0.2em;}
+    #login-screen label {
+      align-self: flex-start;
+      font-size: 1em;
+      color: var(--text-light);
+      margin-bottom: 0.1em;
+      font-weight: 600;
+      margin-left: 3px;
     }
+    #login-screen input[type="text"], #login-screen input[type="password"] {
+      margin-bottom: 0.4em;
+      background: var(--card);
+      border: 1.2px solid var(--primary);
+      color: var(--text-light);
+      font-size: 1em;
+      font-weight: 500;
+      border-radius: 0.8em;
+      padding: 0.6em 1em;
+    }
+    #login-screen button { margin-top: 0.7em; }
     @media (max-width: 600px) {
       .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
       h1 { font-size: 1.26rem;}
       .modal-content {padding: 1.2em 0.5em;}
-      .splash-logo { font-size: 2rem; }
-      .splash { font-size: 1.1rem; }
+      #login-screen { min-width: 0; max-width: 99vw; }
     }
   </style>
 </head>
 <body>
-  <div class="splash" id="splash">
-    <div class="splash-inner">
-      <div class="splash-logo">VOC Trainer</div>
-      <div class="splash-by">by <b>Lars</b></div>
-      <div class="splash-fun">Have fun! 🚀</div>
-    </div>
-  </div>
   <div class="container">
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="screen">
-      <h2>Login to VOC Trainer</h2>
+    <div id="login-screen" class="screen active">
+      <div id="login-header">VOC Trainer</div>
+      <div id="login-sub">by Lars — Please log in!</div>
       <label for="login-username">Username</label>
-      <input type="text" id="login-username" autocomplete="username">
+      <input type="text" id="login-username" autocomplete="username" placeholder="Enter username">
       <label for="login-password">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password">
+      <input type="password" id="login-password" autocomplete="current-password" placeholder="Enter password">
       <button class="btn btn-accent" onclick="window.tryLogin()">Login</button>
-      <div><span id="login-error"></span></div>
+      <div id="login-error"></div>
     </div>
     <!-- Main App Screens -->
     <div id="language-selector" style="display:none">
@@ -372,29 +375,5 @@
     </div>
   </div>
   <script src="script.js"></script>
-  <script>
-    // Splash screen: login only appears after splash, or directly shows app if logged in
-    document.addEventListener("DOMContentLoaded", function(){
-      document.getElementById('login-screen').classList.remove("active");
-      document.getElementById('login-screen').style.display = "none";
-      setTimeout(function(){
-        document.getElementById("splash").classList.add("hide");
-        setTimeout(function(){
-          document.getElementById("splash").style.display = "none";
-          if (!localStorage.getItem("voc_user_current")) {
-            document.getElementById('login-screen').classList.add("active");
-            document.getElementById('login-screen').style.display = "flex";
-          } else {
-            if (typeof showApp === "function") showApp();
-          }
-        }, 1100);
-      }, 1500);
-    });
-  </script>
 </body>
 </html>
-
-
-
-
-
