@@ -215,10 +215,6 @@
       font-size: 1.08em; color: #fffde4; font-weight: 500;
       margin-top: 0.3em; text-shadow: 0 1px 9px #3a8bfd80;
     }
-    @keyframes splashpop {
-      from { transform: scale(.90); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
     #login-screen {
       display: flex; flex-direction: column; gap: 1.3em; align-items: center; margin-bottom: 2em;
     }
@@ -243,7 +239,7 @@
   </div>
   <div class="container">
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="screen active">
+    <div id="login-screen" class="screen">
       <h2>Login to VOC Trainer</h2>
       <label for="login-username">Username</label>
       <input type="text" id="login-username" autocomplete="username">
@@ -381,14 +377,18 @@
     </div>
   </div>
   <script>
-    // Splash screen fade-out
+    // Splash screen fade-out, then show login
     document.addEventListener("DOMContentLoaded", function(){
       setTimeout(function(){
         document.getElementById("splash").classList.add("hide");
         setTimeout(function(){
           document.getElementById("splash").style.display = "none";
+          document.getElementById('login-screen').classList.add("active");
         }, 1100);
       }, 1500);
+
+      // Hide login by default until splash is gone
+      document.getElementById('login-screen').classList.remove("active");
     });
   </script>
   <script src="script.js"></script>
