@@ -15,6 +15,7 @@
       --border: rgba(255,255,255,0.18);
       --text-light: #e8f1fd;
       --text-dark: #222a35;
+      --splash-glow: 0 0 48px 12px #65d6ff44, 0 0 18px 7px #38cfa733, 0 0 0 #0000;
     }
     html, body { height: 100%; }
     body {
@@ -182,30 +183,63 @@
       font-weight: 600; color: var(--accent); border-bottom: 1.5px solid var(--accent);
     }
     .stats-table td { font-weight: 500; }
-    #login-screen { display: flex; flex-direction: column; gap: 1em; align-items: center; }
-    #login-screen h2 { margin-bottom: 0.5em; }
-    #login-screen label { display: block; text-align:left; margin-bottom: 0.3em; }
+    /* Pretty Splash Screen */
+    .splash {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(ellipse at 60% 40%, #38cfa744 0 40%, #151c28 100%);
+      color: #e8f1fd;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 99999;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      opacity: 1; pointer-events: all;
+      transition: opacity 1.1s cubic-bezier(.5,1,.5,1);
+      flex-direction: column;
+      text-align: center;
+      box-shadow: 0 0 60px 8px #38cfa744, 0 0 0 #0000;
+    }
+    .splash.hide { opacity: 0; pointer-events: none; }
+    .splash-inner { animation: splashpop 0.8s cubic-bezier(.3,1.3,.3,1.07); }
+    .splash-logo {
+      font-size: 2.5em; color: #3a8bfd;
+      margin-bottom: 0.13em; letter-spacing: 0.04em;
+      text-shadow: 0 3px 24px #65d6ff88, 0 0 0 #0000;
+    }
+    .splash-by {
+      font-size: 1.1em; color: #38cfa7; font-weight: 600;
+      margin-bottom: 0.2em; letter-spacing: 2px;
+      text-shadow: 0 1px 12px #38cfa7aa;
+    }
+    .splash-fun {
+      font-size: 1.08em; color: #fffde4; font-weight: 500;
+      margin-top: 0.3em; text-shadow: 0 1px 9px #3a8bfd80;
+    }
+    @keyframes splashpop {
+      from { transform: scale(.90); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
     @media (max-width: 600px) {
       .container { max-width: 99vw; border-radius: 0; padding: 1em 0.25em;}
       h1 { font-size: 1.26rem;}
       .modal-content {padding: 1.2em 0.5em;}
+      .splash-logo { font-size: 2rem; }
+      .splash { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="screen active">
-      <h2>Login to VOC Trainer</h2>
-      <label for="login-username">Username</label>
-      <input type="text" id="login-username" autocomplete="username">
-      <label for="login-password">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password">
-      <button class="btn btn-accent" onclick="window.tryLogin()">Login</button>
-      <div><span id="login-error" style="color:#ff6e6e;"></span></div>
+  <div class="splash" id="splash">
+    <div class="splash-inner">
+      <div class="splash-logo">VOC Trainer</div>
+      <div class="splash-by">by <b>Lars</b></div>
+      <div class="splash-fun">Have fun! 🚀</div>
     </div>
-    <!-- Main App Screens -->
-    <div id="language-selector" style="display:none">
+  </div>
+  <div class="container">
+    <div id="language-selector">
       <label for="lang-choice">Quiz Language: </label>
       <select id="lang-choice">
         <option value="fr-nl">French → Dutch</option>
@@ -214,7 +248,7 @@
         <option value="en-nl">English → Dutch</option>
       </select>
     </div>
-    <div id="main-menu" class="screen">
+    <div id="main-menu" class="screen active">
       <h1 class="centered-title">Vocabulary Trainer</h1>
       <div class="menu-list">
         <button class="btn btn-secondary" onclick="showScreen('add-word-menu')">Add New Word</button>
@@ -222,14 +256,13 @@
         <button class="btn" onclick="showScreen('practice-hard-menu')">Practice Hard Words</button>
         <button class="btn" onclick="showScreen('practice-custom-menu')">Practice Custom Words</button>
         <button class="btn btn-secondary" onclick="showStatsScreen()">View Stats</button>
-        <button class="btn btn-secondary" onclick="window.logout()">Logout</button>
       </div>
       <div style="margin: 1.3em 0 1.2em 0;">
         <p>Words in vocabulary: <span id="vocab-count"></span></p>
         <p>Hard words: <span id="hard-count"></span></p>
       </div>
       <div class="footer">
-        Made by Lars for students! 📚            
+        Made by Lars for students! 📚
       </div>
     </div>
     <div id="quiz-screen" class="screen">
@@ -299,18 +332,6 @@
           <td id="total-questions"></td>
           <td id="accuracy"></td>
         </tr>
-        <tr>
-          <td>From → To</td>
-          <td id="fr-to-nl-correct"></td>
-          <td id="fr-to-nl-total"></td>
-          <td id="fr-to-nl-accuracy"></td>
-        </tr>
-        <tr>
-          <td>To → From</td>
-          <td id="nl-to-fr-correct"></td>
-          <td id="nl-to-fr-total"></td>
-          <td id="nl-to-fr-accuracy"></td>
-        </tr>
       </table>
     </div>
     <div id="hard-words-modal" class="modal" tabindex="-1">
@@ -323,365 +344,16 @@
     </div>
   </div>
   <script>
-// ---- Login logic ----
-window.tryLogin = function() {
-  const uname = document.getElementById('login-username').value.trim();
-  const pw = document.getElementById('login-password').value;
-  const error = document.getElementById('login-error');
-  if (!uname || !pw) { error.textContent = "Please enter username and password."; return; }
-  const userKey = `voc_user_${uname}`;
-  const stored = JSON.parse(localStorage.getItem(userKey) || "{}");
-  if (!stored.password) {
-    // First time registering
-    localStorage.setItem(userKey, JSON.stringify({password: pw}));
-    localStorage.setItem("voc_user_current", uname);
-    showApp();
-    return;
-  }
-  if (stored.password === pw) {
-    localStorage.setItem("voc_user_current", uname);
-    showApp();
-    return;
-  }
-  // Password wrong
-  if (confirm("Wrong password. Forgot password?")) {
-    const npw = prompt("Enter a new password:");
-    if (npw && npw.length >= 1) {
-      localStorage.setItem(userKey, JSON.stringify({password: npw}));
-      localStorage.setItem("voc_user_current", uname);
-      showApp();
-      return;
-    }
-  }
-  error.textContent = "Wrong password. Try again.";
-};
-function showApp() {
-  document.getElementById('login-screen').style.display = "none";
-  Array.from(document.querySelectorAll('.screen')).forEach(s=>{
-    if(s.id!=="login-screen") s.style.display="";
-    s.classList.remove('active');
-  });
-  document.getElementById('main-menu').classList.add('active');
-  document.getElementById('language-selector').style.display = "";
-  window.updateAll();
-}
-window.logout = function() {
-  localStorage.removeItem("voc_user_current");
-  document.getElementById('login-screen').style.display = "";
-  Array.from(document.querySelectorAll('.screen')).forEach(s=>{
-    if(s.id!=="login-screen") s.style.display="none";
-    s.classList.remove('active');
-  });
-  document.getElementById('login-screen').classList.add('active');
-  document.getElementById('language-selector').style.display = "none";
-};
-// ---- End login logic ----
-
-// --- Main app logic below (unchanged except for login wrapping) ---
-const ALLOWED_PAIRS = [
-  ["fr", "nl"], ["nl", "fr"], ["nl", "en"], ["en", "nl"]
-];
-const LANGUAGES = [
-  { code: "fr", name: "French" },
-  { code: "nl", name: "Dutch" },
-  { code: "en", name: "English" }
-];
-
-const VOCAB = [
-  ["la banlieue", "de buitenwijken"], ["la campagne", "het platteland"], ["la commune", "de gemeente"], ["le pays", "het land"], ["la région", "de streek, de regio"], ["le loft", "de loft"], ["le logement", "de woonst, de slaapgelegenheid"], ["la maison de rangée", "de rijwoning"], ["la micro-maison", "de microwoning"], ["le studio", "de studio"], ["la Tiny", "de microwoning, het tiny house"], ["la villa", "de villa"], ["abordable", "betaalbaar"], ["agréable", "aangenaam, gezellig"], ["cher, chère", "duur"], ["clos(e)", "afgesloten"], ["confortable", "comfortabel"], ["écologique", "ecologisch"], ["équipé(e) (de)", "voorzien (van), uitgerust (met)"], ["étroit(e)", "smal"], ["magnifique", "prachtig"], ["pratique", "praktisch"], ["spacieux, spacieuse", "ruim"], ["rose", "jaune"], ["blanc, blanche", "vert(e)"], ["noir(e)", "brun(e)"], ["rouge", "mauve"], ["bleu(e)", "orange"], ["gris(e)", ""], ["construire", "bouwen"], ["déménager", "verhuizen"], ["entretenir", "onderhouden"], ["nettoyer", "poetsen"], ["prendre une douche", "zich douchen"], ["ranger", "opruimen"], ["réparer", "herstellen"], ["se changer", "zich omkleden"], ["se déshabiller", "zich uitkleden"], ["se réveiller", "wakker worden"], ["vivre", "wonen, leven"], ["l’ascenseur (m)", "de lift"], ["l’armoire (f)", "de kast"], ["la baignoire", "het bad"], ["le balai", "de bezem"], ["le barbecue", "de barbecue"], ["le cadre", "de lijst, de omlijsting"], ["la cafetière", "het koffiezetapparaat"], ["la casserole", "de kookpan"], ["la chaise", "de stoel"], ["le congélateur", "de diepvriezer"], ["la douche", "de douche"], ["le drap", "het laken"], ["l’étagère (f)", "het rek"], ["l’évier (m)", "de gootsteen"], ["le fauteuil", "de zetel"], ["la fenêtre", "het raam"], ["la garde-robe", "de garderobe, de kleerkast"], ["le grille-pain", "de broodrooster"], ["le haut-parleur", "de luidspreker, de (muziek)box"], ["la lampe", "de lamp"], ["le lavabo", "de wastafel"], ["le lave-vaisselle", "de vaatwasser"], ["le lit", "het bed"], ["le miroir", "de spiegel"], ["l’ordinateur (m)", "de computer"], ["l’oreiller (m)", "het hoofdkussen"], ["le panier à linge", "de linnenmand"], ["le poster", "de poster"], ["la poubelle", "de vuilnisbak"], ["le rasoir", "het scheerapparaat"], ["le réveil", "de wekker"], ["le rideau", "het gordijn"], ["le robinet", "de kraan"], ["le tableau", "het schilderij"], ["la table de nuit", "het nachtkastje"], ["le tapis", "het tapijt"], ["la télé", "de televisie"], ["la télécommande", "de afstandsbediening"], ["la tondeuse à gazon", "de grasmaaier"], ["le bureau", "het bureau"], ["la cabane de jardin", "het tuinhuis"], ["la cave", "de kelder"], ["la chambre à coucher", "de slaapkamer"], ["le couloir", "de gang"], ["la cuisine", "de keuken"], ["le débarras", "de berging"], ["le garage", "de garage"], ["le grenier", "de zolder"], ["le hall (d’entrée)", "de (inkom)hal"], ["le jardin", "de tuin"], ["le living", "de woonkamer"], ["la mezzanine", "de mezzanine, de tussenverdieping"], ["la pièce", "de kamer, het vertrek"], ["la piscine", "het zwembad"], ["le premier étage", "de eerste verdieping"], ["le rez-de-chaussée", "de begane grond"], ["la salle à manger", "de eetkamer"], ["la salle de bains", "de badkamer"], ["la salle de séjour", "de woonkamer"], ["le salon", "het salon"], ["la terrasse", "het terras"], ["les toilettes (f)", "het toilet, de w"]
-];
-
-let currentPair = ["fr", "nl"];
-function updateLangSelector() {
-  const sel = document.getElementById('lang-choice');
-  sel.innerHTML = ALLOWED_PAIRS.map(([from, to]) =>
-    `<option value="${from}-${to}">${getLangName(from)} → ${getLangName(to)}</option>`
-  ).join('');
-  sel.value = currentPair.join('-');
-}
-function getLangName(code) {
-  const l = LANGUAGES.find(l => l.code === code);
-  return l ? l.name : code;
-}
-function pairKey() { return `voc_${window.currentUser()}_custom_${currentPair[0]}_${currentPair[1]}`; }
-function pairHardKey() { return `voc_${window.currentUser()}_hard_${currentPair[0]}_${currentPair[1]}`; }
-function loadCustomWords() { return JSON.parse(localStorage.getItem(pairKey())) || []; }
-function saveCustomWords(words) { localStorage.setItem(pairKey(), JSON.stringify(words)); }
-function loadHardWords() { return JSON.parse(localStorage.getItem(pairHardKey())) || []; }
-function saveHardWords(words) { localStorage.setItem(pairHardKey(), JSON.stringify(words)); }
-window.currentUser = function() {
-  return localStorage.getItem("voc_user_current") || "";
-};
-function allWords() {
-  let base = [];
-  if ((currentPair[0] === "fr" && currentPair[1] === "nl") || (currentPair[0] === "nl" && currentPair[1] === "fr")) {
-    base = VOCAB.map(([fr, nl]) =>
-      currentPair[0] === "fr" ? [fr, nl] : [nl, fr]
-    );
-  }
-  return base.concat(loadCustomWords());
-}
-// --- Per-direction stats per language pair ---
-function statsKeyBase() { return `voc_${window.currentUser()}_STATS`; }
-let statsAll = JSON.parse(localStorage.getItem(statsKeyBase()) || "{}");
-function saveStats() { localStorage.setItem(statsKeyBase(), JSON.stringify(statsAll)); }
-function getStatsKey() { return currentPair.join("-"); }
-function getStats() {
-  if (!statsAll[getStatsKey()]) {
-    statsAll[getStatsKey()] = {
-      from_to: { correct: 0, total: 0 },
-      to_from: { correct: 0, total: 0 },
-      total_correct: 0, total_total: 0
-    };
-  }
-  return statsAll[getStatsKey()];
-}
-function incStat(dir, correct) {
-  let s = getStats();
-  s.total_total++;
-  if (correct) s.total_correct++;
-  if (dir === "from_to" || dir === "to_from") {
-    s[dir].total++;
-    if (correct) s[dir].correct++;
-  }
-  saveStats();
-}
-function updateRecentAdditions() {
-  const container = document.getElementById('recent-list');
-  if (!container) return;
-  const all = loadCustomWords();
-  container.innerHTML = all.length
-    ? all.slice(-10).reverse().map(([from, to], i) =>
-      `<div class="recent-item">
-        <strong>${from}</strong> → ${to}
-        <button class="remove-hard-btn" onclick="window.removeCustomWord(${all.length-1-i})">Remove</button>
-      </div>`
-    ).join('')
-    : '<p style="color:#8fa9cc;">No custom words added yet.</p>';
-}
-window.removeCustomWord = function(idx) {
-  const all = loadCustomWords();
-  all.splice(idx, 1);
-  saveCustomWords(all);
-  updateRecentAdditions();
-  updateUI();
-};
-function updateHardWordsList() {
-  const container = document.getElementById('hard-words-list');
-  const clearBtn = document.getElementById('clear-hard-btn');
-  if (!container) return;
-  const all = loadHardWords();
-  container.innerHTML = all.length
-    ? all.map((hw, i) => `
-      <div class="hard-word-item">
-        <div class="hard-word-content">${i + 1}. ${hw.question} → ${hw.answer}</div>
-        <button class="remove-hard-btn" onclick="window.removeHardWord(${i})">Remove</button>
-      </div>`).join('')
-    : '<p style="color:#8fa9cc;">No hard words yet!</p>';
-  if (clearBtn) clearBtn.style.display = all.length ? 'inline-block' : 'none';
-}
-window.removeHardWord = function(idx) {
-  const all = loadHardWords();
-  all.splice(idx, 1);
-  saveHardWords(all);
-  updateHardWordsList();
-  updateUI();
-};
-window.clearHardWords = function() {
-  if (confirm('Are you sure you want to clear all hard words?')) {
-    saveHardWords([]);
-    updateHardWordsList();
-    updateUI();
-  }
-};
-window.addNewWord = function() {
-  const from = document.getElementById('custom-from-word').value.trim();
-  const to = document.getElementById('custom-to-word').value.trim();
-  if (!from || !to) return alert('Please fill in both fields!');
-  const all = loadCustomWords();
-  if (all.some(([f, t]) => f === from && t === to)) return alert('Word exists.');
-  all.push([from, to]);
-  saveCustomWords(all);
-  document.getElementById('custom-from-word').value = '';
-  document.getElementById('custom-to-word').value = '';
-  updateRecentAdditions();
-  updateUI();
-  alert('Word added!');
-};
-let quizState = {
-  isHard: false,
-  isCustom: false,
-  qNum: 0,
-  currentQ: null,
-  currentA: null,
-  currentDir: null,
-  pendingHard: null,
-};
-function generateQuestion() {
-  let pairs;
-  if (quizState.isHard) {
-    pairs = loadHardWords().map(hw => [hw.question, hw.answer]);
-  } else if (quizState.isCustom) {
-    pairs = loadCustomWords();
-  } else {
-    pairs = allWords();
-  }
-  if (!pairs.length) return null;
-  const [from, to] = pairs[Math.floor(Math.random() * pairs.length)];
-  const askFrom = Math.random() < 0.5;
-  quizState.currentQ = askFrom ? from : to;
-  quizState.currentA = askFrom ? to : from;
-  quizState.currentDir = askFrom ? 'from_to' : 'to_from';
-  quizState.qNum++;
-  return { question: quizState.currentQ, answer: quizState.currentA, direction: quizState.currentDir };
-}
-window.startQuiz = function() {
-  quizState.isHard = false;
-  quizState.isCustom = false;
-  quizState.qNum = 0;
-  showScreen('quiz-screen');
-  nextQuestion();
-};
-window.practiceHardWords = function() {
-  quizState.isHard = true;
-  quizState.isCustom = false;
-  quizState.qNum = 0;
-  showScreen('quiz-screen');
-  nextQuestion();
-};
-window.practiceCustomWords = function() {
-  quizState.isCustom = true;
-  quizState.isHard = false;
-  quizState.qNum = 0;
-  showScreen('quiz-screen');
-  nextQuestion();
-};
-function nextQuestion() {
-  const q = generateQuestion();
-  if (!q) { alert("No vocabulary available!"); showScreen('main-menu'); return; }
-  document.getElementById('question-direction').textContent = "";
-  document.getElementById('question-text').textContent = q.question;
-  document.getElementById('answer-input').value = '';
-  document.getElementById('answer-input').focus();
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('feedback').className = 'feedback';
-  updateUI();
-}
-window.submitAnswer = function() {
-  const userAnswer = document.getElementById('answer-input').value.trim();
-  if (!userAnswer) { alert('Please enter an answer!'); return; }
-  const correct = normalizeAnswer(userAnswer) === normalizeAnswer(quizState.currentA);
-  incStat(quizState.currentDir, correct);
-  if (correct) {
-    document.getElementById('feedback').textContent = '✅ Correct! Well done!';
-    document.getElementById('feedback').className = 'feedback correct';
-    setTimeout(nextQuestion, 900);
-  } else {
-    document.getElementById('feedback').textContent = `❌ Incorrect. The correct answer is: ${quizState.currentA}`;
-    document.getElementById('feedback').className = 'feedback incorrect';
-    quizState.pendingHard = {
-      question: quizState.currentQ,
-      answer: quizState.currentA,
-      direction: quizState.currentDir
-    };
-    setTimeout(showHardWordsModal, 900);
-  }
-  updateUI();
-};
-window.addToHardWords = function(shouldAdd) {
-  if (shouldAdd && quizState.pendingHard) {
-    let all = loadHardWords();
-    if (!all.some(hw => hw.question === quizState.pendingHard.question && hw.answer === quizState.pendingHard.answer))
-    {
-      all.push(quizState.pendingHard);
-      saveHardWords(all);
-      updateHardWordsList();
-    }
-  }
-  document.getElementById('hard-words-modal').classList.remove('active');
-  document.body.style.overflow = '';
-  quizState.pendingHard = null;
-  setTimeout(nextQuestion, 500);
-};
-function showHardWordsModal() {
-  const modal = document.getElementById('hard-words-modal');
-  document.body.style.overflow = 'hidden';
-  modal.classList.add('active');
-  modal.focus();
-}
-function normalizeAnswer(ans) {
-  return (ans||"").toLowerCase().trim().replace(/[.,;:!?()"'-]/g, '').replace(/\s+/g, ' ');
-}
-function updateUI() {
-  document.getElementById('vocab-count').textContent = allWords().length;
-  document.getElementById('hard-count').textContent = loadHardWords().length;
-  let s = getStats();
-  document.getElementById('current-score').textContent =
-    `${s.total_correct}/${s.total_total}`;
-  const percentage = s.total_total > 0 ?
-    Math.round((s.total_correct / s.total_total) * 100) : 0;
-  document.getElementById('score-percentage').textContent = `${percentage}%`;
-  document.getElementById('question-number').textContent = quizState.qNum;
-}
-window.showScreen = function(screenId) {
-  document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-  if (screenId === 'add-word-menu') updateRecentAdditions();
-  if (screenId === 'practice-hard-menu') {
-    updateRecentAdditions('recent-list-hard');
-    updateHardWordsList();
-  }
-  if (screenId === 'main-menu') {
-    updateRecentAdditions();
-    updateHardWordsList();
-    updateUI();
-  }
-};
-window.showStatsScreen = function() {
-  updateStatsDisplay();
-  showScreen('stats-screen');
-};
-function updateStatsDisplay() {
-  let s = getStats();
-  document.getElementById('total-questions').textContent = s.total_total;
-  document.getElementById('correct-answers').textContent = s.total_correct;
-  const acc = s.total_total > 0 ? Math.round((s.total_correct / s.total_total) * 100) : 0;
-  document.getElementById('accuracy').textContent = `${acc}%`;
-  document.getElementById('fr-to-nl-correct').textContent = s.from_to ? s.from_to.correct : 0;
-  document.getElementById('fr-to-nl-total').textContent = s.from_to ? s.from_to.total : 0;
-  document.getElementById('fr-to-nl-accuracy').textContent = s.from_to && s.from_to.total > 0 ? Math.round((s.from_to.correct/s.from_to.total)*100)+'%' : '-';
-  document.getElementById('nl-to-fr-correct').textContent = s.to_from ? s.to_from.correct : 0;
-  document.getElementById('nl-to-fr-total').textContent = s.to_from ? s.to_from.total : 0;
-  document.getElementById('nl-to-fr-accuracy').textContent = s.to_from && s.to_from.total > 0 ? Math.round((s.to_from.correct/s.to_from.total)*100)+'%' : '-';
-}
-window.updateAll = function() {
-  updateLangSelector();
-  updateRecentAdditions();
-  updateHardWordsList();
-  updateUI();
-};
-document.addEventListener('DOMContentLoaded', function () {
-  // Auto-login if possible
-  if (window.currentUser()) showApp();
-  updateLangSelector();
-  updateRecentAdditions();
-  updateHardWordsList();
-  updateUI();
-  if (document.getElementById('custom-to-word'))
-    document.getElementById('custom-to-word').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') window.addNewWord();
+    // Splash screen fade-out
+    document.addEventListener("DOMContentLoaded", function(){
+      setTimeout(function(){
+        document.getElementById("splash").classList.add("hide");
+        setTimeout(function(){
+          document.getElementById("splash").style.display = "none";
+        }, 1100);
+      }, 1500);
     });
-  if (document.getElementById('custom-from-word'))
-    document.getElementById('custom-from-word').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') document.getElementById('custom-to-word').focus();
-    });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      document.getElementById('hard-words-modal').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  });
-});
   </script>
+  <script src="script.js"></script>
 </body>
 </html>
