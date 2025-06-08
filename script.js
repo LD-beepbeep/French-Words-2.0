@@ -1,4 +1,4 @@
-// Allowed language pairs
+// --- Only French↔Dutch, Dutch↔French, Dutch↔English, English↔Dutch pairs ---
 const ALLOWED_PAIRS = [
   ["fr", "nl"],
   ["nl", "fr"],
@@ -11,135 +11,51 @@ const LANGUAGES = [
   { code: "en", name: "English" }
 ];
 
-// Only built-in French-Dutch vocab
 const VOCAB = [
-  ["la banlieue", "de buitenwijken"],
-  ["la campagne", "het platteland"],
-  ["la commune", "de gemeente"],
-  ["le pays", "het land"],
-  ["la région", "de streek, de regio"],
-  ["le loft", "de loft"],
-  ["le logement", "de woonst, de slaapgelegenheid"],
-  ["la maison de rangée", "de rijwoning"],
-  ["la micro-maison", "de microwoning"],
-  ["le studio", "de studio"],
-  ["la Tiny", "de microwoning, het tiny house"],
-  ["la villa", "de villa"],
-  ["abordable", "betaalbaar"],
-  ["agréable", "aangenaam, gezellig"],
-  ["cher, chère", "duur"],
-  ["clos(e)", "afgesloten"],
-  ["confortable", "comfortabel"],
-  ["écologique", "ecologisch"],
-  ["équipé(e) (de)", "voorzien (van), uitgerust (met)"],
-  ["étroit(e)", "smal"],
-  ["magnifique", "prachtig"],
-  ["pratique", "praktisch"],
-  ["spacieux, spacieuse", "ruim"],
-  ["rose", "jaune"],
-  ["blanc, blanche", "vert(e)"],
-  ["noir(e)", "brun(e)"],
-  ["rouge", "mauve"],
-  ["bleu(e)", "orange"],
-  ["gris(e)", ""],
-  ["construire", "bouwen"],
-  ["déménager", "verhuizen"],
-  ["entretenir", "onderhouden"],
-  ["nettoyer", "poetsen"],
-  ["prendre une douche", "zich douchen"],
-  ["ranger", "opruimen"],
-  ["réparer", "herstellen"],
-  ["se changer", "zich omkleden"],
-  ["se déshabiller", "zich uitkleden"],
-  ["se réveiller", "wakker worden"],
-  ["vivre", "wonen, leven"],
-  ["l’ascenseur (m)", "de lift"],
-  ["l’armoire (f)", "de kast"],
-  ["la baignoire", "het bad"],
-  ["le balai", "de bezem"],
-  ["le barbecue", "de barbecue"],
-  ["le cadre", "de lijst, de omlijsting"],
-  ["la cafetière", "het koffiezetapparaat"],
-  ["la casserole", "de kookpan"],
-  ["la chaise", "de stoel"],
-  ["le congélateur", "de diepvriezer"],
-  ["la douche", "de douche"],
-  ["le drap", "het laken"],
-  ["l’étagère (f)", "het rek"],
-  ["l’évier (m)", "de gootsteen"],
-  ["le fauteuil", "de zetel"],
-  ["la fenêtre", "het raam"],
-  ["la garde-robe", "de garderobe, de kleerkast"],
-  ["le grille-pain", "de broodrooster"],
-  ["le haut-parleur", "de luidspreker, de (muziek)box"],
-  ["la lampe", "de lamp"],
-  ["le lavabo", "de wastafel"],
-  ["le lave-vaisselle", "de vaatwasser"],
-  ["le lit", "het bed"],
-  ["le miroir", "de spiegel"],
-  ["l’ordinateur (m)", "de computer"],
-  ["l’oreiller (m)", "het hoofdkussen"],
-  ["le panier à linge", "de linnenmand"],
-  ["le poster", "de poster"],
-  ["la poubelle", "de vuilnisbak"],
-  ["le rasoir", "het scheerapparaat"],
-  ["le réveil", "de wekker"],
-  ["le rideau", "het gordijn"],
-  ["le robinet", "de kraan"],
-  ["le tableau", "het schilderij"],
-  ["la table de nuit", "het nachtkastje"],
-  ["le tapis", "het tapijt"],
-  ["la télé", "de televisie"],
-  ["la télécommande", "de afstandsbediening"],
-  ["la tondeuse à gazon", "de grasmaaier"],
-  ["le bureau", "het bureau"],
-  ["la cabane de jardin", "het tuinhuis"],
-  ["la cave", "de kelder"],
-  ["la chambre à coucher", "de slaapkamer"],
-  ["le couloir", "de gang"],
-  ["la cuisine", "de keuken"],
-  ["le débarras", "de berging"],
-  ["le garage", "de garage"],
-  ["le grenier", "de zolder"],
-  ["le hall (d’entrée)", "de (inkom)hal"],
-  ["le jardin", "de tuin"],
-  ["le living", "de woonkamer"],
-  ["la mezzanine", "de mezzanine, de tussenverdieping"],
-  ["la pièce", "de kamer, het vertrek"],
-  ["la piscine", "het zwembad"],
-  ["le premier étage", "de eerste verdieping"],
-  ["le rez-de-chaussée", "de begane grond"],
-  ["la salle à manger", "de eetkamer"],
-  ["la salle de bains", "de badkamer"],
-  ["la salle de séjour", "de woonkamer"],
-  ["le salon", "het salon"],
-  ["la terrasse", "het terras"],
-  ["les toilettes (f)", "het toilet, de w"]
+  ["la banlieue", "de buitenwijken"], ["la campagne", "het platteland"], ["la commune", "de gemeente"],
+  ["le pays", "het land"], ["la région", "de streek, de regio"], ["le loft", "de loft"],
+  ["le logement", "de woonst, de slaapgelegenheid"], ["la maison de rangée", "de rijwoning"],
+  ["la micro-maison", "de microwoning"], ["le studio", "de studio"], ["la Tiny", "de microwoning, het tiny house"],
+  ["la villa", "de villa"], ["abordable", "betaalbaar"], ["agréable", "aangenaam, gezellig"], ["cher, chère", "duur"],
+  ["clos(e)", "afgesloten"], ["confortable", "comfortabel"], ["écologique", "ecologisch"],
+  ["équipé(e) (de)", "voorzien (van), uitgerust (met)"], ["étroit(e)", "smal"], ["magnifique", "prachtig"],
+  ["pratique", "praktisch"], ["spacieux, spacieuse", "ruim"], ["rose", "jaune"],
+  ["blanc, blanche", "vert(e)"], ["noir(e)", "brun(e)"], ["rouge", "mauve"], ["bleu(e)", "orange"], ["gris(e)", ""],
+  ["construire", "bouwen"], ["déménager", "verhuizen"], ["entretenir", "onderhouden"], ["nettoyer", "poetsen"],
+  ["prendre une douche", "zich douchen"], ["ranger", "opruimen"], ["réparer", "herstellen"], ["se changer", "zich omkleden"],
+  ["se déshabiller", "zich uitkleden"], ["se réveiller", "wakker worden"], ["vivre", "wonen, leven"],
+  ["l’ascenseur (m)", "de lift"], ["l’armoire (f)", "de kast"], ["la baignoire", "het bad"], ["le balai", "de bezem"],
+  ["le barbecue", "de barbecue"], ["le cadre", "de lijst, de omlijsting"], ["la cafetière", "het koffiezetapparaat"],
+  ["la casserole", "de kookpan"], ["la chaise", "de stoel"], ["le congélateur", "de diepvriezer"],
+  ["la douche", "de douche"], ["le drap", "het laken"], ["l’étagère (f)", "het rek"], ["l’évier (m)", "de gootsteen"],
+  ["le fauteuil", "de zetel"], ["la fenêtre", "het raam"], ["la garde-robe", "de garderobe, de kleerkast"],
+  ["le grille-pain", "de broodrooster"], ["le haut-parleur", "de luidspreker, de (muziek)box"], ["la lampe", "de lamp"],
+  ["le lavabo", "de wastafel"], ["le lave-vaisselle", "de vaatwasser"], ["le lit", "het bed"], ["le miroir", "de spiegel"],
+  ["l’ordinateur (m)", "de computer"], ["l’oreiller (m)", "het hoofdkussen"], ["le panier à linge", "de linnenmand"],
+  ["le poster", "de poster"], ["la poubelle", "de vuilnisbak"], ["le rasoir", "het scheerapparaat"],
+  ["le réveil", "de wekker"], ["le rideau", "het gordijn"], ["le robinet", "de kraan"], ["le tableau", "het schilderij"],
+  ["la table de nuit", "het nachtkastje"], ["le tapis", "het tapijt"], ["la télé", "de televisie"],
+  ["la télécommande", "de afstandsbediening"], ["la tondeuse à gazon", "de grasmaaier"], ["le bureau", "het bureau"],
+  ["la cabane de jardin", "het tuinhuis"], ["la cave", "de kelder"], ["la chambre à coucher", "de slaapkamer"],
+  ["le couloir", "de gang"], ["la cuisine", "de keuken"], ["le débarras", "de berging"], ["le garage", "de garage"],
+  ["le grenier", "de zolder"], ["le hall (d’entrée)", "de (inkom)hal"], ["le jardin", "de tuin"],
+  ["le living", "de woonkamer"], ["la mezzanine", "de mezzanine, de tussenverdieping"], ["la pièce", "de kamer, het vertrek"],
+  ["la piscine", "het zwembad"], ["le premier étage", "de eerste verdieping"], ["le rez-de-chaussée", "de begane grond"],
+  ["la salle à manger", "de eetkamer"], ["la salle de bains", "de badkamer"], ["la salle de séjour", "de woonkamer"],
+  ["le salon", "het salon"], ["la terrasse", "het terras"], ["les toilettes (f)", "het toilet, de w"]
 ];
 
-// Language pair state and storage
-let languagePairs = ALLOWED_PAIRS.slice();
-let currentPair = languagePairs[0];
-
-// Storage keys per pair
-function pairKey() { return `vocab_custom_${currentPair[0]}_${currentPair[1]}`; }
-function pairHardKey() { return `vocab_hard_${currentPair[0]}_${currentPair[1]}`; }
-function loadCustomWords() { return JSON.parse(localStorage.getItem(pairKey())) || []; }
-function saveCustomWords(words) { localStorage.setItem(pairKey(), JSON.stringify(words)); }
-function loadHardWords() { return JSON.parse(localStorage.getItem(pairHardKey())) || []; }
-function saveHardWords(words) { localStorage.setItem(pairHardKey(), JSON.stringify(words)); }
-
-function getLangName(code) {
-  const l = LANGUAGES.find(l => l.code === code);
-  return l ? l.name : code;
-}
-
+let currentPair = ["fr", "nl"];
 function updateLangSelector() {
   const sel = document.getElementById('lang-choice');
-  sel.innerHTML = languagePairs.map(([from, to]) =>
+  sel.innerHTML = ALLOWED_PAIRS.map(([from, to]) =>
     `<option value="${from}-${to}">${getLangName(from)} → ${getLangName(to)}</option>`
   ).join('');
   sel.value = currentPair.join('-');
+}
+function getLangName(code) {
+  const l = LANGUAGES.find(l => l.code === code);
+  return l ? l.name : code;
 }
 document.addEventListener("DOMContentLoaded", function() {
   updateLangSelector();
@@ -147,11 +63,23 @@ document.addEventListener("DOMContentLoaded", function() {
     currentPair = this.value.split('-');
     updateAll();
   };
+  // Splash Screen
+  const splash = document.getElementById('splash');
+  setTimeout(() => {
+    splash.classList.add('hide');
+    setTimeout(() => splash.style.display = "none", 700);
+  }, 1100);
   updateAll();
 });
 
+function pairKey() { return `vocab_custom_${currentPair[0]}_${currentPair[1]}`; }
+function pairHardKey() { return `vocab_hard_${currentPair[0]}_${currentPair[1]}`; }
+function loadCustomWords() { return JSON.parse(localStorage.getItem(pairKey())) || []; }
+function saveCustomWords(words) { localStorage.setItem(pairKey(), JSON.stringify(words)); }
+function loadHardWords() { return JSON.parse(localStorage.getItem(pairHardKey())) || []; }
+function saveHardWords(words) { localStorage.setItem(pairHardKey(), JSON.stringify(words)); }
+
 function allWords() {
-  // Built-in vocab only for fr-nl, nl-fr (reverse), custom for all
   let base = [];
   if ((currentPair[0] === "fr" && currentPair[1] === "nl") || (currentPair[0] === "nl" && currentPair[1] === "fr")) {
     base = VOCAB.map(([fr, nl]) =>
@@ -161,7 +89,32 @@ function allWords() {
   return base.concat(loadCustomWords());
 }
 
-// --- Custom Words List with remove support ---
+// --- Per-direction stats per language pair ---
+let statsAll = JSON.parse(localStorage.getItem("VOC_STATS") || "{}");
+
+function saveStats() { localStorage.setItem("VOC_STATS", JSON.stringify(statsAll)); }
+function getStatsKey() { return currentPair.join("-"); }
+function getStats() {
+  if (!statsAll[getStatsKey()]) {
+    statsAll[getStatsKey()] = {
+      from_to: { correct: 0, total: 0 },
+      to_from: { correct: 0, total: 0 },
+      total_correct: 0, total_total: 0
+    };
+  }
+  return statsAll[getStatsKey()];
+}
+function incStat(dir, correct) {
+  let s = getStats();
+  s.total_total++;
+  if (correct) s.total_correct++;
+  if (dir === "from_to" || dir === "to_from") {
+    s[dir].total++;
+    if (correct) s[dir].correct++;
+  }
+  saveStats();
+}
+
 function updateRecentAdditions() {
   const container = document.getElementById('recent-list');
   if (!container) return;
@@ -183,7 +136,6 @@ window.removeCustomWord = function(idx) {
   updateUI();
 };
 
-// --- Hard words ---
 function updateHardWordsList() {
   const container = document.getElementById('hard-words-list');
   const clearBtn = document.getElementById('clear-hard-btn');
@@ -213,7 +165,6 @@ window.clearHardWords = function() {
   }
 };
 
-// --- Add word ---
 window.addNewWord = function() {
   const from = document.getElementById('custom-from-word').value.trim();
   const to = document.getElementById('custom-to-word').value.trim();
@@ -229,11 +180,9 @@ window.addNewWord = function() {
   alert('Word added!');
 };
 
-// --- Quiz logic ---
 let quizState = {
   isHard: false,
   isCustom: false,
-  stats: { correct: 0, total: 0 },
   qNum: 0,
   currentQ: null,
   currentA: null,
@@ -261,7 +210,6 @@ function generateQuestion() {
 window.startQuiz = function() {
   quizState.isHard = false;
   quizState.isCustom = false;
-  quizState.stats = { correct: 0, total: 0 };
   quizState.qNum = 0;
   showScreen('quiz-screen');
   nextQuestion();
@@ -269,7 +217,6 @@ window.startQuiz = function() {
 window.practiceHardWords = function() {
   quizState.isHard = true;
   quizState.isCustom = false;
-  quizState.stats = { correct: 0, total: 0 };
   quizState.qNum = 0;
   showScreen('quiz-screen');
   nextQuestion();
@@ -277,7 +224,6 @@ window.practiceHardWords = function() {
 window.practiceCustomWords = function() {
   quizState.isCustom = true;
   quizState.isHard = false;
-  quizState.stats = { correct: 0, total: 0 };
   quizState.qNum = 0;
   showScreen('quiz-screen');
   nextQuestion();
@@ -296,9 +242,9 @@ function nextQuestion() {
 window.submitAnswer = function() {
   const userAnswer = document.getElementById('answer-input').value.trim();
   if (!userAnswer) { alert('Please enter an answer!'); return; }
-  quizState.stats.total++;
-  if (normalizeAnswer(userAnswer) === normalizeAnswer(quizState.currentA)) {
-    quizState.stats.correct++;
+  const correct = normalizeAnswer(userAnswer) === normalizeAnswer(quizState.currentA);
+  incStat(quizState.currentDir, correct);
+  if (correct) {
     document.getElementById('feedback').textContent = '✅ Correct! Well done!';
     document.getElementById('feedback').className = 'feedback correct';
     setTimeout(nextQuestion, 900);
@@ -341,10 +287,11 @@ function normalizeAnswer(ans) {
 function updateUI() {
   document.getElementById('vocab-count').textContent = allWords().length;
   document.getElementById('hard-count').textContent = loadHardWords().length;
+  let s = getStats();
   document.getElementById('current-score').textContent =
-    `${quizState.stats.correct}/${quizState.stats.total}`;
-  const percentage = quizState.stats.total > 0 ?
-    Math.round((quizState.stats.correct / quizState.stats.total) * 100) : 0;
+    `${s.total_correct}/${s.total_total}`;
+  const percentage = s.total_total > 0 ?
+    Math.round((s.total_correct / s.total_total) * 100) : 0;
   document.getElementById('score-percentage').textContent = `${percentage}%`;
   document.getElementById('question-number').textContent = quizState.qNum;
 }
@@ -361,23 +308,33 @@ window.showScreen = function(screenId) {
     updateHardWordsList();
     updateUI();
   }
-  if (screenId === 'upload-bulk-menu') {
-    if (document.getElementById('bulk-upload-preview'))
-      document.getElementById('bulk-upload-preview').innerHTML = '';
-  }
 };
 window.showStatsScreen = function() {
   updateStatsDisplay();
   showScreen('stats-screen');
 };
 function updateStatsDisplay() {
-  document.getElementById('total-questions').textContent = quizState.stats.total;
-  document.getElementById('correct-answers').textContent = quizState.stats.correct;
-  const acc = quizState.stats.total > 0 ? Math.round((quizState.stats.correct / quizState.stats.total) * 100) : 0;
+  let s = getStats();
+  document.getElementById('total-questions').textContent = s.total_total;
+  document.getElementById('correct-answers').textContent = s.total_correct;
+  const acc = s.total_total > 0 ? Math.round((s.total_correct / s.total_total) * 100) : 0;
   document.getElementById('accuracy').textContent = `${acc}%`;
+  // Detailed directions
+  document.getElementById('fr-to-nl-correct').textContent = s.from_to ? s.from_to.correct : 0;
+  document.getElementById('fr-to-nl-total').textContent = s.from_to ? s.from_to.total : 0;
+  document.getElementById('fr-to-nl-accuracy').textContent = s.from_to && s.from_to.total > 0 ? Math.round((s.from_to.correct/s.from_to.total)*100)+'%' : '-';
+  document.getElementById('nl-to-fr-correct').textContent = s.to_from ? s.to_from.correct : 0;
+  document.getElementById('nl-to-fr-total').textContent = s.to_from ? s.to_from.total : 0;
+  document.getElementById('nl-to-fr-accuracy').textContent = s.to_from && s.to_from.total > 0 ? Math.round((s.to_from.correct/s.to_from.total)*100)+'%' : '-';
 }
 
-// --- Initial load ---
+window.updateAll = function() {
+  updateLangSelector();
+  updateRecentAdditions();
+  updateHardWordsList();
+  updateUI();
+};
+
 document.addEventListener('DOMContentLoaded', function () {
   updateLangSelector();
   updateRecentAdditions();
