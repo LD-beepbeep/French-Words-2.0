@@ -355,3 +355,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+document.addEventListener("DOMContentLoaded", function(){
+  setTimeout(function(){
+    document.getElementById("splash").classList.add("hide");
+    setTimeout(function(){
+      document.getElementById("splash").style.display = "none";
+    }, 1100);
+  }, 1600);
+});
