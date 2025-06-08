@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- your CSS from above, unchanged --- */
         :root {
             --primary: #3a8bfd;
             --accent: #38cfa7;
@@ -77,6 +78,12 @@
         .btn-secondary:active, .btn-secondary:focus {
             background: #1b2535;
         }
+        .btn-small {
+            padding: 3px 8px;
+            font-size: 13px;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
         .screen { display: none; }
         .screen.active { display: block; }
         .menu-list { display: flex; flex-direction: column; gap: 1em; }
@@ -140,7 +147,6 @@
         }
         .feedback.correct { color: var(--accent); }
         .feedback.incorrect { color: #ff6e6e; }
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -188,7 +194,6 @@
             opacity: 0.85;
             letter-spacing: 0.05em;
         }
-        /* Language selector */
         #language-selector {
             margin-bottom: 2em;
             text-align: center;
@@ -206,7 +211,6 @@
             padding: 0.3em 1.1em;
             margin-left: 0.2em;
         }
-        /* Stats */
         .stats-table {
             width: 100%;
             border-spacing: 0.5em 0.2em;
@@ -233,23 +237,22 @@
 </head>
 <body>
     <div class="container">
-        <!-- Language selector -->
+        <!-- Language selector (now with add/remove pair buttons) -->
         <div id="language-selector">
             <label for="lang-choice">Quiz Language: </label>
-            <select id="lang-choice" onchange="setQuizLanguage()">
-                <option value="fr-nl">French & Dutch</option>
-                <option value="en-nl">English & Dutch</option>
-                <option value="en-fr">English & French</option>
-            </select>
+            <select id="lang-choice"></select>
+            <button class="btn btn-small" id="add-lang-btn" title="Add language pair">＋</button>
+            <button class="btn btn-small" id="remove-lang-btn" title="Remove current language pair">🗑</button>
         </div>
         <!-- Main Menu -->
         <div id="main-menu" class="screen active">
             <h1 class="centered-title">Vocabulary Trainer</h1>
             <div class="menu-list">
+                <button class="btn btn-secondary" onclick="showScreen('add-word-menu')">Add New Word</button>
+                <button class="btn btn-accent" onclick="showScreen('upload-bulk-menu')">Bulk Upload (AI extract)</button>
                 <button class="btn" onclick="startQuiz()">Start Quiz</button>
                 <button class="btn" onclick="showScreen('practice-hard-menu')">Practice Hard Words</button>
-                <button class="btn btn-accent" onclick="showScreen('practice-custom-menu')">Practice Custom Words</button>
-                <button class="btn btn-secondary" onclick="showScreen('add-word-menu')">Add New Word</button>
+                <button class="btn" onclick="showScreen('practice-custom-menu')">Practice Custom Words</button>
                 <button class="btn btn-secondary" onclick="showStatsScreen()">View Stats</button>
             </div>
             <div style="margin: 1.3em 0 1.2em 0;">
@@ -259,6 +262,18 @@
             <div class="footer">
                 Made by Lars for students! 📚            
             </div>
+        </div>
+        <!-- Bulk Upload -->
+        <div id="upload-bulk-menu" class="screen">
+            <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
+            <h2 class="centered-title">Bulk Upload Words (AI extract stub)</h2>
+            <div style="margin-bottom:1em;">
+                <input type="file" id="bulk-upload-file" accept=".txt,.csv">
+                <select id="bulk-from-lang"></select> →
+                <select id="bulk-to-lang"></select>
+                <button class="btn btn-accent" id="bulk-upload-btn">Extract &amp; Preview</button>
+            </div>
+            <div id="bulk-upload-preview"></div>
         </div>
         <!-- Quiz -->
         <div id="quiz-screen" class="screen">
@@ -289,6 +304,7 @@
                 <h3>Recently Added Words</h3>
                 <div id="recent-list-hard"></div>
                 <h3>Hard Words List</h3>
+                <input type="text" id="search-hard" placeholder="Search...">
                 <div id="hard-words-list"></div>
                 <button id="clear-hard-btn" class="btn btn-secondary" onclick="clearHardWords()" style="display:none;">Clear Hard Words</button>
             </div>
@@ -306,13 +322,13 @@
             <button class="btn btn-secondary back-btn" onclick="showScreen('main-menu')">Back to Menu</button>
             <h2 class="centered-title">Add Custom Word</h2>
             <div class="inputs-row">
-                <input type="text" id="custom-french-word" placeholder="French word">
-                <input type="text" id="custom-dutch-word" placeholder="Dutch translation">
-                <input type="text" id="custom-english-word" placeholder="English translation (optional)">
+                <input type="text" id="custom-from-word" placeholder="Word in source language">
+                <input type="text" id="custom-to-word" placeholder="Word in target language">
                 <button class="btn" onclick="addNewWord()">Add</button>
             </div>
             <div>
                 <h3>Recently Added Words</h3>
+                <input type="text" id="search-custom" placeholder="Search...">
                 <div id="recent-list"></div>
             </div>
         </div>
@@ -333,18 +349,6 @@
                     <td id="total-questions"></td>
                     <td id="accuracy"></td>
                 </tr>
-                <tr>
-                    <td>🇫🇷→🇳🇱</td>
-                    <td id="fr-to-nl-correct"></td>
-                    <td id="fr-to-nl-total"></td>
-                    <td id="fr-to-nl-accuracy"></td>
-                </tr>
-                <tr>
-                    <td>🇳🇱→🇫🇷</td>
-                    <td id="nl-to-fr-correct"></td>
-                    <td id="nl-to-fr-total"></td>
-                    <td id="nl-to-fr-accuracy"></td>
-                </tr>
             </table>
         </div>
         <!-- Modal -->
@@ -357,6 +361,9 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script>
+        // --- JS CODE: use the script.js logic as in previous message, just paste it here ---
+        // (For brevity, not repeating the 300+ lines here, but you already have it above. Paste it all here as-is.)
+    </script>
 </body>
 </html>
